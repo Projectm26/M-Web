@@ -30,12 +30,16 @@ VITE_API_BASE_URL=https://<api>.up.railway.app
 
 Leave empty = build fails (no hardcoded API host).
 
+**Railway + Docker:** service Variables are passed into the image build as `--build-arg` **only if** the Dockerfile declares a matching `ARG` (same name). M-Web declares `ARG VITE_API_BASE_URL` — keep the Variable name exact. Do not use a different key (e.g. `BUILD_VITE_API_BASE_URL`) unless you also rename the ARG.
+
+If the value uses a Railway reference (`${{Api.RAILWAY_PUBLIC_DOMAIN}}`), that service must already have a public domain or the build-arg resolves empty.
+
 ## Deploy steps
 
 1. Railway → New service → GitHub `Projectm26/M-Web` → branch `main`.
 2. Builder: **Dockerfile** / path `Dockerfile` (from `railway.toml`).
 3. **Variables** — paste [railway.web.env.example](./railway.web.env.example):
-   - `VITE_API_BASE_URL` (set **before** first build)
+   - `VITE_API_BASE_URL` — **exact name**, set **before** first build (literal `https://…up.railway.app` or a resolved `${{…}}` reference)
    - `CMS_ACCESS_KEY` (long random)
 4. **Volume** → mount **`/app/data`**, replicas **1**.
 5. Generate public domain → note `https://<web>.up.railway.app`.
