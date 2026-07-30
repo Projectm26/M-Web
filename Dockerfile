@@ -11,10 +11,12 @@
 # Mount a Volume at /app/data for CMS SQLite + hero uploads.
 # Add this site's public origin to the API service ALLOWED_ORIGINS.
 
-# ----- Build (Vite SPA) ------------------------------------------------------
+# ----- Build SPA + compile native deps (better-sqlite3) ----------------------
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+# Build tools for better-sqlite3 (node-gyp). Same alpine base as runner so
+# the compiled .node binary is compatible — do NOT reinstall in runner.
 RUN apk add --no-cache python3 make g++
 
 COPY package.json package-lock.json* ./
@@ -39,7 +41,9 @@ RUN if [ -z "$VITE_API_BASE_URL" ]; then \
       exit 1; \
     fi \
  && echo "Building with VITE_API_BASE_URL=$VITE_API_BASE_URL" \
- && npm run build
+ && npm run build \
+ && npm prune --omit=dev \
+ && npm cache clean --force
 
 # ----- Runtime (static SPA + hero CMS) ---------------------------------------
 FROM node:22-alpine AS runner
@@ -53,24 +57,22 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     NPM_CONFIG_LOGLEVEL=warn
 
+# No python/make/g++ here — native modules come from builder.
 # su-exec: drop root → web after chown'ing the Railway volume at /app/data
-RUN apk add --no-cache python3 make g++ curl su-exec \
+RUN apk add --no-cache curl su-exec \
  && addgroup -S web && adduser -S web -G web \
  && mkdir -p /app/data/uploads/heroes \
  && chown -R web:web /app
 
-COPY package.json package-lock.json* ./
-RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi \
- && apk del python3 make g++ \
- && npm cache clean --force
-
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY cms-server ./cms-server
 COPY public/hero-campaigns.json ./public/hero-campaigns.json
 COPY data/.gitkeep ./data/.gitkeep
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh \
- && chown -R web:web /app/dist /app/cms-server /app/public /app/data
+ && chown -R web:web /app/dist /app/cms-server /app/public /app/data /app/node_modules /app/package.json
 
 # Start as root so entrypoint can chown the mounted volume, then su-exec to web.
 EXPOSE 3000
