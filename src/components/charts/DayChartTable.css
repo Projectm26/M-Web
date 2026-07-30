@@ -61,53 +61,53 @@
 
   .day-chart-frame {
     position: relative;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .day-chart-body {
-    max-height: min(64dvh, 580px);
+    max-height: min(66dvh, 600px);
   }
 
   .day-chart-head,
   .day-chart-row {
-    grid-template-columns: 32px repeat(var(--day-cols), minmax(0, 1fr));
+    grid-template-columns: 30px repeat(var(--day-cols), minmax(0, 1fr));
   }
 
   .day-chart-date-col {
-    padding: 2px 1px;
-    font-size: 0.52rem;
-    letter-spacing: -0.03em;
+    padding: 2px 0;
+    font-size: 0.62rem;
+    letter-spacing: -0.02em;
   }
 
   .day-chart-th {
-    padding: 3px 0;
-    font-size: 0.52rem;
+    padding: 4px 0;
+    font-size: 0.62rem;
     letter-spacing: 0;
   }
 
   .day-chart-cell {
-    font-size: 0.58rem;
+    font-size: 0.72rem;
     padding: 1px 0;
   }
 
   .day-chart-cell--stacked {
-    font-size: 0.5rem;
+    font-size: 0.62rem;
   }
 
   .day-chart-panna {
-    font-size: 0.48rem;
-  }
-
-  .day-chart-bottom {
     font-size: 0.58rem;
   }
 
+  .day-chart-bottom {
+    font-size: 0.72rem;
+  }
+
   .day-chart--starline .day-chart-row {
-    min-height: 40px;
+    min-height: 42px;
   }
 
   .day-chart-row {
-    min-height: 32px;
+    min-height: 34px;
   }
 }
 

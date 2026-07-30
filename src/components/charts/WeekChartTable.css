@@ -55,9 +55,9 @@
 .week-chart-head,
 .week-chart-row {
   display: grid;
-  grid-template-columns: 1.25fr repeat(7, minmax(0, 1fr));
+  grid-template-columns: 1.25fr repeat(var(--week-cols, 7), minmax(0, 1fr));
   align-items: stretch;
-  min-width: 560px;
+  min-width: calc(72px + var(--week-cols, 7) * 70px);
   width: 100%;
 }
 
@@ -276,11 +276,11 @@
   }
 
   .week-chart-frame {
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .week-chart-body {
-    max-height: min(64dvh, 580px);
+    max-height: min(66dvh, 600px);
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;
@@ -295,32 +295,32 @@
   .week-chart-head,
   .week-chart-row {
     min-width: 0;
-    grid-template-columns: minmax(40px, 0.85fr) repeat(7, minmax(0, 1fr));
+    grid-template-columns: 36px repeat(var(--week-cols, 7), minmax(0, 1fr));
   }
 
   .week-chart-date-col {
     position: static;
     box-shadow: none;
-    padding: 4px 2px;
+    padding: 3px 1px;
     gap: 0;
   }
 
   .week-chart-year {
     position: static;
-    padding: 5px 8px;
-    font-size: 0.58rem;
+    padding: 4px 6px;
+    font-size: 0.62rem;
     letter-spacing: 0.08em;
   }
 
   .week-chart-th {
-    min-height: 26px;
+    min-height: 28px;
     padding: 4px 0;
-    font-size: 0.55rem;
+    font-size: 0.68rem;
     letter-spacing: 0.02em;
   }
 
   .week-chart-date-primary {
-    font-size: 0.58rem;
+    font-size: 0.68rem;
   }
 
   .week-chart-date-to {
@@ -328,43 +328,43 @@
   }
 
   .week-chart-date-secondary {
-    font-size: 0.52rem;
+    font-size: 0.58rem;
   }
 
   .week-chart-cell {
-    padding: 3px 0;
+    padding: 2px 0;
     gap: 0;
   }
 
   .week-chart-badge {
-    font-size: 0.52rem;
-    letter-spacing: -0.04em;
+    font-size: 0.68rem;
+    letter-spacing: -0.03em;
   }
 
   .week-chart-badge.is-highlight {
-    font-size: 0.64rem;
+    font-size: 0.8rem;
   }
 
   .week-chart-badge.is-placeholder {
-    font-size: 0.5rem;
+    font-size: 0.62rem;
   }
 
   .week-chart--main .week-chart-badge:not(.is-highlight),
   .week-chart--starline .week-chart-badge:not(.is-highlight) {
-    font-size: 0.46rem;
-    opacity: 0.9;
+    font-size: 0.58rem;
+    opacity: 0.92;
   }
 
   .week-chart-row {
-    min-height: 48px;
+    min-height: 50px;
   }
 
   .week-chart--jodi .week-chart-row,
   .week-chart--jackpot .week-chart-row {
-    min-height: 40px;
+    min-height: 44px;
   }
 
   .week-chart--starline .week-chart-row {
-    min-height: 44px;
+    min-height: 48px;
   }
 }

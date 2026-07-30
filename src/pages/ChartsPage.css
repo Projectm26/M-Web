@@ -238,7 +238,7 @@
 
 @media (max-width: 719px) {
   .charts-page {
-    padding: var(--space-4) 0 calc(var(--space-8) + var(--safe-bottom));
+    padding: var(--space-3) 0 calc(var(--space-8) + var(--safe-bottom));
   }
 
   .charts-page-inner {
@@ -247,8 +247,8 @@
 
   .container.charts-page-inner,
   .container.charts-page-inner--day {
-    width: min(100% - 8px, var(--max-w));
-    padding-inline: 4px;
+    width: 100%;
+    padding-inline: 2px;
   }
 
   .charts-page--day .charts-page-inner--day {

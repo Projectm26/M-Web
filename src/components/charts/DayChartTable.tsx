@@ -17,7 +17,7 @@ interface DayChartTableProps {
   loading?: boolean;
 }
 
-/** Compact hour label so 12 columns fit: 8a, 12p, 1p … */
+/** Compact hour label: 8a, 12p, 1p … */
 function formatHourLabel(hour: number): string {
   const h = ((hour % 24) + 24) % 24;
   const suffix = h < 12 ? "a" : "p";
@@ -61,7 +61,7 @@ export const DayChartTable = forwardRef<DayChartTableHandle, DayChartTableProps>
   function DayChartTable({ kind, hours, rows, loading }, ref) {
     const bodyRef = useRef<HTMLDivElement>(null);
     const product = productKind(kind);
-    const colCount = Math.max(hours.length, 12);
+    const colCount = Math.max(hours.length, 1);
     const [compactUi, setCompactUi] = useState(false);
     const [showHint, setShowHint] = useState(false);
 
@@ -121,9 +121,9 @@ export const DayChartTable = forwardRef<DayChartTableHandle, DayChartTableProps>
             >
               <div className="day-chart-head" role="row">
                 <div className="day-chart-date-col day-chart-th">Date</div>
-                {(hours.length ? hours : Array.from({ length: 12 }, (_, i) => i)).map((h, i) => (
+                {hours.map((h, i) => (
                   <div className="day-chart-th" key={`${h}-${i}`}>
-                    {hours.length ? formatHourLabel(h) : "—"}
+                    {formatHourLabel(h)}
                   </div>
                 ))}
               </div>

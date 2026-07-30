@@ -1,4 +1,5 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { dayjs } from "../../lib/time";
 import {
   buildWinBadges,
@@ -24,6 +25,19 @@ interface WeekChartTableProps {
 }
 
 const MOBILE_DAY_HEADERS = ["M", "T", "W", "T", "F", "S", "S"] as const;
+const ALL_DAY_INDEXES = [0, 1, 2, 3, 4, 5, 6] as const;
+
+function cellHasData(cell: ChartWeekRow["days"][number], kind: ChartKind): boolean {
+  if (!cell?.result) return false;
+  return buildWinBadges(cell.result, kind).some((b) => !b.isPlaceholder);
+}
+
+/** Drop weekday columns that never have a declared result across the board. */
+function activeDayIndexes(weeks: ChartWeekRow[], kind: ChartKind): number[] {
+  if (!weeks.length) return [...ALL_DAY_INDEXES];
+  const active = ALL_DAY_INDEXES.filter((i) => weeks.some((w) => cellHasData(w.days[i], kind)));
+  return active.length ? [...active] : [...ALL_DAY_INDEXES];
+}
 
 export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTableProps>(
   function WeekChartTable({ kind, weeks, loading }, ref) {
@@ -33,7 +47,10 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
     const [showHint, setShowHint] = useState(false);
     const compactDate = compactUi || kind === "starline" || kind === "jackpot" || kind === "jodi";
     const meta = chartHistoryMeta(weeks);
-    const dayHeaders = compactUi ? MOBILE_DAY_HEADERS : CHART_DAY_HEADERS;
+    const dayIndexes = useMemo(() => activeDayIndexes(weeks, kind), [weeks, kind]);
+    const dayHeaders = dayIndexes.map((i) =>
+      compactUi ? MOBILE_DAY_HEADERS[i] : CHART_DAY_HEADERS[i],
+    );
 
     useImperativeHandle(ref, () => ({
       scrollToTop: () => {
@@ -57,7 +74,6 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
     useEffect(() => {
       const el = bodyRef.current;
       if (!el || loading || !weeks.length) return;
-      // Land on newest weeks (bottom), like the app.
       el.scrollTop = el.scrollHeight;
       if (weeks.length > 4) {
         setShowHint(true);
@@ -79,6 +95,10 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
       return () => el.removeEventListener("scroll", onScroll);
     }, [showHint]);
 
+    const gridStyle = {
+      "--week-cols": String(dayIndexes.length),
+    } as CSSProperties;
+
     return (
       <div className={`week-chart week-chart--${accent} week-chart--${kind}`}>
         {!loading && weeks.length > 0 ? (
@@ -97,10 +117,10 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
 
         <div className="week-chart-frame">
           <div className="week-chart-body" ref={bodyRef}>
-            <div className="week-chart-head" role="row">
+            <div className="week-chart-head" role="row" style={gridStyle}>
               <div className="week-chart-date-col week-chart-th">Date</div>
               {dayHeaders.map((day, i) => (
-                <div className="week-chart-th" key={`${day}-${i}`}>
+                <div className="week-chart-th" key={`${day}-${dayIndexes[i]}`}>
                   {day}
                 </div>
               ))}
@@ -108,10 +128,10 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
 
             {loading ? (
               Array.from({ length: 10 }).map((_, i) => (
-                <div className="week-chart-row week-chart-row--skeleton" key={i}>
+                <div className="week-chart-row week-chart-row--skeleton" key={i} style={gridStyle}>
                   <div className="week-chart-date-col skeleton" />
-                  {CHART_DAY_HEADERS.map((d) => (
-                    <div className="skeleton week-chart-skel-cell" key={d} />
+                  {dayIndexes.map((di) => (
+                    <div className="skeleton week-chart-skel-cell" key={di} />
                   ))}
                 </div>
               ))
@@ -131,13 +151,14 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
                         {year}
                       </div>
                     ) : null}
-                    <div className="week-chart-row" role="row">
+                    <div className="week-chart-row" role="row" style={gridStyle}>
                       <div className="week-chart-date-col">
                         <span className="week-chart-date-primary">{label.primary}</span>
                         {!compactDate ? <span className="week-chart-date-to">to</span> : null}
                         <span className="week-chart-date-secondary">{label.secondary}</span>
                       </div>
-                      {week.days.map((cell, i) => {
+                      {dayIndexes.map((di) => {
+                        const cell = week.days[di];
                         const result = cell?.result || chartPlaceholder(kind);
                         const badges = buildWinBadges(result, kind);
                         const hasData = badges.some((b) => !b.isPlaceholder);
@@ -145,7 +166,7 @@ export const WeekChartTable = forwardRef<WeekChartTableHandle, WeekChartTablePro
                         return (
                           <div
                             className={`week-chart-cell ${hasData ? "has-data" : ""} ${family ? "is-family" : ""}`}
-                            key={`${week.rangeStart}-${i}`}
+                            key={`${week.rangeStart}-${di}`}
                           >
                             {badges.map((badge, bi) => (
                               <span

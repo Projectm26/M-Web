@@ -37,25 +37,25 @@ const DAY_CHART_META: Record<
     product: "starline",
     night: 0,
     title: "Starline Day",
-    subtitle: "8:00 AM – 7:00 PM · 12 hourly columns",
+    subtitle: "Day games · one column per game",
   },
   "starline-night": {
     product: "starline",
     night: 1,
     title: "Starline Night",
-    subtitle: "8:00 PM – 7:00 AM · 12 hourly columns",
+    subtitle: "Night games · one column per game",
   },
   "jackpot-day": {
     product: "jackpot",
     night: 0,
     title: "Jackpot Day",
-    subtitle: "8:00 AM – 7:00 PM · 12 hourly columns",
+    subtitle: "Day games · one column per game",
   },
   "jackpot-night": {
     product: "jackpot",
     night: 1,
     title: "Jackpot Night",
-    subtitle: "8:00 PM – 7:00 AM · 12 hourly columns",
+    subtitle: "Night games · one column per game",
   },
 };
 
