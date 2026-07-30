@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { dayjs } from "../../lib/time";
 import { buildWinBadges } from "../../lib/chartFormat";
 import type { DayChartKind, DayChartRow } from "../../hooks/useDayChartData";
@@ -62,6 +62,8 @@ export const DayChartTable = forwardRef<DayChartTableHandle, DayChartTableProps>
     const bodyRef = useRef<HTMLDivElement>(null);
     const product = productKind(kind);
     const colCount = Math.max(hours.length, 12);
+    const [compactUi, setCompactUi] = useState(false);
+    const [showHint, setShowHint] = useState(false);
 
     useImperativeHandle(ref, () => ({
       scrollToTop: () => {
@@ -75,10 +77,34 @@ export const DayChartTable = forwardRef<DayChartTableHandle, DayChartTableProps>
     }));
 
     useEffect(() => {
+      const mq = window.matchMedia("(max-width: 719px)");
+      const sync = () => setCompactUi(mq.matches);
+      sync();
+      mq.addEventListener("change", sync);
+      return () => mq.removeEventListener("change", sync);
+    }, []);
+
+    useEffect(() => {
       const el = bodyRef.current;
       if (!el || loading || !rows.length) return;
       el.scrollTop = 0;
+      if (rows.length > 8) {
+        setShowHint(true);
+        const timer = window.setTimeout(() => setShowHint(false), 6500);
+        return () => window.clearTimeout(timer);
+      }
+      setShowHint(false);
     }, [rows, loading]);
+
+    useEffect(() => {
+      const el = bodyRef.current;
+      if (!el || !showHint) return;
+      const onScroll = () => {
+        if (el.scrollTop > 12) setShowHint(false);
+      };
+      el.addEventListener("scroll", onScroll, { passive: true });
+      return () => el.removeEventListener("scroll", onScroll);
+    }, [showHint]);
 
     return (
       <div className={`day-chart day-chart--${product}`}>
@@ -117,7 +143,7 @@ export const DayChartTable = forwardRef<DayChartTableHandle, DayChartTableProps>
                 rows.map((row) => (
                   <div className="day-chart-row" key={row.date} role="row">
                     <div className="day-chart-date-col">
-                      {dayjs(row.date).format("D MMM")}
+                      {dayjs(row.date).format(compactUi ? "D/M" : "D MMM")}
                     </div>
                     {hours.map((h, i) => (
                       <DayChartCell
@@ -130,6 +156,9 @@ export const DayChartTable = forwardRef<DayChartTableHandle, DayChartTableProps>
                 ))
               )}
             </div>
+          </div>
+          <div className="day-chart-hint-flyout" hidden={!showHint} aria-hidden>
+            Scroll for more
           </div>
         </div>
       </div>

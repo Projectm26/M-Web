@@ -238,15 +238,29 @@
 
 @media (max-width: 719px) {
   .charts-page {
-    padding: var(--space-5) 0 calc(var(--space-10) + var(--safe-bottom));
+    padding: var(--space-4) 0 calc(var(--space-8) + var(--safe-bottom));
   }
 
+  .charts-page-inner {
+    gap: var(--space-3);
+  }
+
+  .container.charts-page-inner,
   .container.charts-page-inner--day {
     width: min(100% - 8px, var(--max-w));
+    padding-inline: 4px;
   }
 
   .charts-page--day .charts-page-inner--day {
-    gap: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .charts-detail-heading h1 {
+    font-size: 1.2rem;
+  }
+
+  .charts-detail-heading p {
+    display: none;
   }
 
   .charts-hub-card {
@@ -271,11 +285,13 @@
   .charts-detail-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 
   .charts-detail-actions .btn {
     width: 100%;
-    min-height: 44px;
+    min-height: 40px;
+    font-size: 0.82rem;
   }
 }
 

@@ -10,7 +10,8 @@
   --chart-accent-soft: var(--product-starline-soft);
 }
 
-.week-chart--jackpot {
+.week-chart--jackpot,
+.week-chart--jodi {
   --chart-accent: var(--product-jackpot);
   --chart-accent-soft: var(--product-jackpot-soft);
 }
@@ -43,6 +44,7 @@
 }
 
 .week-chart-frame {
+  position: relative;
   overflow: hidden;
   border-radius: 16px;
   background: var(--color-card);
@@ -56,6 +58,7 @@
   grid-template-columns: 1.25fr repeat(7, minmax(0, 1fr));
   align-items: stretch;
   min-width: 560px;
+  width: 100%;
 }
 
 .week-chart-body {
@@ -225,29 +228,143 @@
   box-shadow: none;
 }
 
+.week-chart-hint {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--chart-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--chart-accent) 92%, #1a120e);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  box-shadow: 0 8px 20px rgb(26 18 14 / 22%);
+  animation: week-chart-hint-in 0.35s ease both;
+}
+
+.week-chart-hint[hidden] {
+  display: none;
+}
+
+@keyframes week-chart-hint-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* App-like one window: full width, vertical scroll only */
 @media (max-width: 720px) {
-  .week-chart-th,
-  .week-chart-date-primary {
-    font-size: 0.66rem;
+  .week-chart {
+    gap: 0;
   }
 
-  .week-chart-date-secondary {
-    font-size: 0.6rem;
+  .week-chart-meta {
+    display: none;
   }
 
-  .week-chart-badge {
-    font-size: 0.66rem;
-  }
-
-  .week-chart-badge.is-highlight {
-    font-size: 0.74rem;
-  }
-
-  .week-chart-row {
-    min-height: 52px;
+  .week-chart-frame {
+    border-radius: 14px;
   }
 
   .week-chart-body {
-    max-height: min(68dvh, 680px);
+    max-height: min(64dvh, 580px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .week-chart-body::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .week-chart-head,
+  .week-chart-row {
+    min-width: 0;
+    grid-template-columns: minmax(40px, 0.85fr) repeat(7, minmax(0, 1fr));
+  }
+
+  .week-chart-date-col {
+    position: static;
+    box-shadow: none;
+    padding: 4px 2px;
+    gap: 0;
+  }
+
+  .week-chart-year {
+    position: static;
+    padding: 5px 8px;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .week-chart-th {
+    min-height: 26px;
+    padding: 4px 0;
+    font-size: 0.55rem;
+    letter-spacing: 0.02em;
+  }
+
+  .week-chart-date-primary {
+    font-size: 0.58rem;
+  }
+
+  .week-chart-date-to {
+    display: none;
+  }
+
+  .week-chart-date-secondary {
+    font-size: 0.52rem;
+  }
+
+  .week-chart-cell {
+    padding: 3px 0;
+    gap: 0;
+  }
+
+  .week-chart-badge {
+    font-size: 0.52rem;
+    letter-spacing: -0.04em;
+  }
+
+  .week-chart-badge.is-highlight {
+    font-size: 0.64rem;
+  }
+
+  .week-chart-badge.is-placeholder {
+    font-size: 0.5rem;
+  }
+
+  .week-chart--main .week-chart-badge:not(.is-highlight),
+  .week-chart--starline .week-chart-badge:not(.is-highlight) {
+    font-size: 0.46rem;
+    opacity: 0.9;
+  }
+
+  .week-chart-row {
+    min-height: 48px;
+  }
+
+  .week-chart--jodi .week-chart-row,
+  .week-chart--jackpot .week-chart-row {
+    min-height: 40px;
+  }
+
+  .week-chart--starline .week-chart-row {
+    min-height: 44px;
   }
 }

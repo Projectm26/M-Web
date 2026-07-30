@@ -18,6 +18,7 @@
 }
 
 .day-chart-frame {
+  position: relative;
   overflow: hidden;
   border-radius: 12px;
   background: var(--color-card);
@@ -25,32 +26,88 @@
   box-shadow: 0 8px 24px rgb(31 26 24 / 5%);
 }
 
+.day-chart-hint-flyout {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  z-index: 4;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--chart-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--chart-accent) 92%, #1a120e);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  box-shadow: 0 8px 20px rgb(26 18 14 / 22%);
+}
+
+.day-chart-hint-flyout[hidden] {
+  display: none;
+}
+
 @media (max-width: 719px) {
+  .day-chart {
+    gap: 0;
+  }
+
+  .day-chart-hint {
+    display: none;
+  }
+
   .day-chart-frame {
-    border-radius: 10px;
+    position: relative;
+    border-radius: 14px;
+  }
+
+  .day-chart-body {
+    max-height: min(64dvh, 580px);
   }
 
   .day-chart-head,
   .day-chart-row {
-    grid-template-columns: 34px repeat(var(--day-cols), minmax(0, 1fr));
+    grid-template-columns: 32px repeat(var(--day-cols), minmax(0, 1fr));
   }
 
   .day-chart-date-col {
     padding: 2px 1px;
-    font-size: 0.58rem;
+    font-size: 0.52rem;
+    letter-spacing: -0.03em;
   }
 
   .day-chart-th {
     padding: 3px 0;
-    font-size: 0.58rem;
+    font-size: 0.52rem;
+    letter-spacing: 0;
   }
 
   .day-chart-cell {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
+    padding: 1px 0;
   }
 
   .day-chart-cell--stacked {
+    font-size: 0.5rem;
+  }
+
+  .day-chart-panna {
+    font-size: 0.48rem;
+  }
+
+  .day-chart-bottom {
     font-size: 0.58rem;
+  }
+
+  .day-chart--starline .day-chart-row {
+    min-height: 40px;
+  }
+
+  .day-chart-row {
+    min-height: 32px;
   }
 }
 
