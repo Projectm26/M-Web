@@ -2,9 +2,13 @@
 #
 # Dockerfile path: repo root (Dockerfile)
 #
-# Required at Docker build (baked into the Vite client):
+# Required at Docker build (baked into the Vite client) — set on the service
+# BEFORE first deploy, then Redeploy if you change it:
 #   VITE_API_BASE_URL = https://<api>.up.railway.app   (no /api suffix)
 #
+# Use a Railway reference if the API is in the same project, e.g.:
+#   VITE_API_BASE_URL=https://${{M-Backend.RAILWAY_PUBLIC_DOMAIN}}
+
 # Runtime:
 #   CMS_ACCESS_KEY = long random secret (required for /cms admin)
 #   Volume mount: /app/data  (SQLite + hero uploads)
