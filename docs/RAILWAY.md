@@ -41,7 +41,8 @@ If the value uses a Railway reference (`${{Api.RAILWAY_PUBLIC_DOMAIN}}`), that s
 3. **Variables** — paste [railway.web.env.example](./railway.web.env.example):
    - `VITE_API_BASE_URL` — **exact name**, set **before** first build (literal `https://…up.railway.app` or a resolved `${{…}}` reference)
    - `CMS_ACCESS_KEY` (long random)
-4. **Volume** → mount **`/app/data`**, replicas **1**.
+4. **Volume** → mount **`/app/data`**, replicas **1**.  
+   The image entrypoint chowns this path on boot (Railway volumes are root-owned; the app runs as `web`).
 5. Generate public domain → note `https://<web>.up.railway.app`.
 6. On **M-Backend** variables, add that origin to `ALLOWED_ORIGINS` (comma-separated), then redeploy API.
 7. Deploy Web. Healthcheck: **`GET /healthz`**.

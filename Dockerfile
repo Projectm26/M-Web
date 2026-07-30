@@ -53,7 +53,8 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     NPM_CONFIG_LOGLEVEL=warn
 
-RUN apk add --no-cache python3 make g++ curl \
+# su-exec: drop root → web after chown'ing the Railway volume at /app/data
+RUN apk add --no-cache python3 make g++ curl su-exec \
  && addgroup -S web && adduser -S web -G web \
  && mkdir -p /app/data/uploads/heroes \
  && chown -R web:web /app
@@ -67,12 +68,15 @@ COPY --from=builder /app/dist ./dist
 COPY cms-server ./cms-server
 COPY public/hero-campaigns.json ./public/hero-campaigns.json
 COPY data/.gitkeep ./data/.gitkeep
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh \
+ && chown -R web:web /app/dist /app/cms-server /app/public /app/data
 
-USER web
-
+# Start as root so entrypoint can chown the mounted volume, then su-exec to web.
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD curl -fsS "http://127.0.0.1:${PORT:-3000}/healthz" || exit 1
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["npx", "tsx", "cms-server/index.ts"]

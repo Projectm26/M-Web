@@ -11,7 +11,7 @@
 
 # Runtime:
 #   CMS_ACCESS_KEY = long random secret (required for /cms admin)
-#   Volume mount: /app/data  (SQLite + hero uploads)
+#   Volume mount: /app/data  (SQLite + hero uploads; entrypoint chowns on start)
 #
 # Also add this site's public origin to the API service ALLOWED_ORIGINS.
 
