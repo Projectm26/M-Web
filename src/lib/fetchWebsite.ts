@@ -12,7 +12,7 @@ export class WebsiteApiError extends Error {
   }
 }
 
-export async function fetchJson<T extends Record<string, unknown>>(
+export async function fetchJson<T extends object>(
   url: string,
   init?: RequestInit,
 ): Promise<T> {
@@ -32,7 +32,7 @@ export async function fetchJson<T extends Record<string, unknown>>(
   return data;
 }
 
-export async function postJson<T extends Record<string, unknown>>(
+export async function postJson<T extends object>(
   url: string,
   body: unknown,
 ): Promise<T> {

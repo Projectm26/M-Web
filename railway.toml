@@ -1,0 +1,23 @@
+# Railway — M-Web (Shubh555 public site)
+#
+# Dockerfile path: repo root (Dockerfile)
+#
+# Required at Docker build (baked into the Vite client):
+#   VITE_API_BASE_URL = https://<api>.up.railway.app   (no /api suffix)
+#
+# Runtime:
+#   CMS_ACCESS_KEY = long random secret (required for /cms admin)
+#   Volume mount: /app/data  (SQLite + hero uploads)
+#
+# Also add this site's public origin to the API service ALLOWED_ORIGINS.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "npx tsx cms-server/index.ts"
+healthcheckPath = "/healthz"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

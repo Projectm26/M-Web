@@ -2,7 +2,7 @@
  * Backend origin — no trailing slash.
  *
  * - Dev: same-origin `/api` via Vite proxy (avoids CORS).
- * - Prod: `VITE_API_BASE_URL` absolute origin.
+ * - Prod: `VITE_API_BASE_URL` absolute origin (baked at Docker/Vite build).
  */
 const isDev = import.meta.env.DEV;
 
@@ -12,9 +12,13 @@ const configured =
     ? ""
     : String(raw).replace(/\/$/, "");
 
-export const API_BASE = isDev
-  ? ""
-  : configured || "https://p01--l-b--f8scybsf5kqx.code.run";
+export const API_BASE = isDev ? "" : configured;
+
+if (!isDev && !API_BASE) {
+  console.warn(
+    "[web] VITE_API_BASE_URL is empty — API calls will hit this origin and fail. Set it at build time.",
+  );
+}
 
 export const apkDownloadUrl = `${API_BASE}/api/app/download`;
 

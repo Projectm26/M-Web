@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ChartLine, ChevronRight, Moon, Sun } from "lucide-react";

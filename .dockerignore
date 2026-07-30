@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.vscode
+.idea
+data/**
+!data/.gitkeep
+cms.sqlite*
+README.md
+docs
