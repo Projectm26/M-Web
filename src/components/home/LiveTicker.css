@@ -1,0 +1,132 @@
+.live-ticker {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: var(--ticker-h);
+  background: var(--color-ink);
+  color: var(--color-ink-text);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-ink-border);
+}
+
+.live-ticker-label {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  background: var(--color-primary);
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+.live-ticker-track {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.live-ticker-scroll {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+  padding-inline: 14px;
+  white-space: nowrap;
+}
+
+.live-ticker-scroll:hover,
+.live-ticker-track:focus-within .live-ticker-scroll,
+.live-ticker:active .live-ticker-scroll {
+  animation-play-state: paused;
+}
+
+.live-ticker-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-right: 22px;
+  font-size: 0.84rem;
+}
+
+.live-ticker-item + .live-ticker-item {
+  border-left: 1px solid rgb(255 255 255 / 12%);
+  padding-left: 22px;
+}
+
+.live-ticker-name {
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.live-ticker-result {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.86rem;
+  letter-spacing: 0.03em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 559px) {
+  .live-ticker {
+    height: 44px;
+  }
+
+  .live-ticker-label {
+    padding: 0 10px;
+    gap: 0;
+    font-size: 0;
+  }
+
+  .live-ticker-label .live-dot {
+    margin: 0;
+  }
+
+  .live-ticker-name {
+    font-size: 0.72rem;
+  }
+
+  .live-ticker-result {
+    font-size: 0.84rem;
+  }
+
+  .live-ticker-item {
+    padding-right: 18px;
+  }
+
+  .live-ticker-item + .live-ticker-item {
+    padding-left: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-ticker-scroll {
+    animation: none;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .live-dot {
+    animation: none;
+  }
+}

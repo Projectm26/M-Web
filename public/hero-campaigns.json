@@ -1,0 +1,28 @@
+{
+  "defaultCampaignId": "board-light",
+  "campaigns": [
+    {
+      "id": "board-light",
+      "active": true,
+      "startsAt": "2026-07-01",
+      "endsAt": null,
+      "priority": 10,
+      "kicker": "",
+      "brand": "Shubh555",
+      "tagline": "Live open–close boards. Play in the official app.",
+      "ctaLabel": "Get the App",
+      "showSupportLinks": false,
+      "backgroundImage": "/media/heroes/sunset.jpg",
+      "objectPosition": "58% 38%",
+      "layout": "image",
+      "watermark": [],
+      "phonePreview": {
+        "rows": [
+          { "label": "Kalyan", "result": "482-49", "tone": "main" },
+          { "label": "Starline", "result": "7", "tone": "starline" },
+          { "label": "Jackpot", "result": "39", "tone": "jackpot" }
+        ]
+      }
+    }
+  ]
+}

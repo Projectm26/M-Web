@@ -1,0 +1,18 @@
+.night-section {
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 90% at 0% 20%, rgb(21 101 192 / 8%), transparent 55%),
+    linear-gradient(180deg, #f3f0f8 0%, var(--color-bg) 100%);
+  border-block: 1px solid rgb(21 101 192 / 8%);
+}
+
+.night-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: radial-gradient(rgb(21 101 192 / 8%) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
+}

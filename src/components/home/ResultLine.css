@@ -1,0 +1,38 @@
+.result-line {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  color: var(--color-primary-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.result-line--md {
+  font-size: 1.15rem;
+}
+
+.result-line--lg {
+  font-size: clamp(1.25rem, 2.4vw, 1.4rem);
+}
+
+.result-line--status {
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+.result-line-sep {
+  color: rgb(184 78 38 / 55%);
+  margin-inline: 1px;
+}
+
+.result-line-pending {
+  color: rgb(184 78 38 / 72%);
+}
+
+.result-line-digit {
+  color: var(--color-primary-dark);
+}

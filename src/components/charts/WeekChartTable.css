@@ -1,0 +1,253 @@
+.week-chart {
+  --chart-accent: var(--product-main);
+  --chart-accent-soft: var(--product-main-soft);
+  display: grid;
+  gap: 10px;
+}
+
+.week-chart--starline {
+  --chart-accent: var(--product-starline);
+  --chart-accent-soft: var(--product-starline-soft);
+}
+
+.week-chart--jackpot {
+  --chart-accent: var(--product-jackpot);
+  --chart-accent-soft: var(--product-jackpot-soft);
+}
+
+.week-chart-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.week-chart-meta-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--chart-accent);
+  background: var(--chart-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--chart-accent) 18%, transparent);
+}
+
+.week-chart-meta-range {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.week-chart-frame {
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-light);
+  box-shadow: 0 8px 24px rgb(31 26 24 / 5%);
+}
+
+.week-chart-head,
+.week-chart-row {
+  display: grid;
+  grid-template-columns: 1.25fr repeat(7, minmax(0, 1fr));
+  align-items: stretch;
+  min-width: 560px;
+}
+
+.week-chart-body {
+  max-height: min(78dvh, 820px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.week-chart-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f7f0ea;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.week-chart-th {
+  display: grid;
+  place-items: center;
+  min-height: 30px;
+  padding: 5px 2px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  border-left: 1px solid var(--color-border-light);
+}
+
+.week-chart-th:first-child,
+.week-chart-date-col {
+  border-left: 0;
+}
+
+.week-chart-year {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding: 7px 12px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chart-accent);
+  background: linear-gradient(90deg, var(--chart-accent-soft), rgb(255 255 255 / 92%));
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.week-chart-row {
+  border-bottom: 1px solid var(--color-border-light);
+  min-height: 56px;
+}
+
+.week-chart--jodi .week-chart-row,
+.week-chart--jackpot .week-chart-row {
+  min-height: 48px;
+}
+
+.week-chart--starline .week-chart-row {
+  min-height: 52px;
+}
+
+.week-chart-row:last-child {
+  border-bottom: 0;
+}
+
+.week-chart-date-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  gap: 1px;
+  padding: 6px 4px;
+  text-align: center;
+  background: #faf0e8;
+  box-shadow: 1px 0 0 var(--color-border-light);
+}
+
+.week-chart-head .week-chart-date-col {
+  z-index: 3;
+  background: #f7f0ea;
+}
+
+.week-chart-date-primary {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  line-height: 1.15;
+}
+
+.week-chart-date-to {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+.week-chart-date-secondary {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  line-height: 1.15;
+}
+
+.week-chart-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 2px;
+  border-left: 1px solid var(--color-border-light);
+  min-width: 0;
+  background: #fff;
+}
+
+.week-chart-cell.has-data {
+  background: color-mix(in srgb, var(--chart-accent) 7%, #fff);
+}
+
+.week-chart-badge {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.week-chart-badge.is-highlight {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--chart-accent);
+}
+
+.week-chart-badge.is-placeholder {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: rgb(154 144 138 / 85%);
+}
+
+.week-chart-cell.is-family .week-chart-badge.is-highlight {
+  color: #c62828;
+}
+
+.week-chart-empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.92rem;
+}
+
+.week-chart-row--skeleton {
+  gap: 0;
+}
+
+.week-chart-skel-cell,
+.week-chart-row--skeleton .week-chart-date-col {
+  margin: 8px 4px;
+  height: 36px;
+  border-radius: 8px;
+  border-left: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .week-chart-th,
+  .week-chart-date-primary {
+    font-size: 0.66rem;
+  }
+
+  .week-chart-date-secondary {
+    font-size: 0.6rem;
+  }
+
+  .week-chart-badge {
+    font-size: 0.66rem;
+  }
+
+  .week-chart-badge.is-highlight {
+    font-size: 0.74rem;
+  }
+
+  .week-chart-row {
+    min-height: 52px;
+  }
+
+  .week-chart-body {
+    max-height: min(68dvh, 680px);
+  }
+}

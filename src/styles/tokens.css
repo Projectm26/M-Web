@@ -1,0 +1,75 @@
+:root {
+  /* Sunset Pulse — Shubh555 (match app light palette) */
+  --color-primary: #d86438;
+  --color-primary-dark: #b84e26;
+  --color-primary-light: #e89572;
+  --color-primary-surface: #faf0e8;
+  --color-primary-tint: rgb(216 100 56 / 10%);
+  --color-bg: #faf7f5;
+  --color-bg-secondary: #ffffff;
+  --color-bg-menu: #f7f0ea;
+  --color-card: #ffffff;
+  --color-text: #1f1a18;
+  --color-text-secondary: #5f5652;
+  --color-text-muted: #9a908a;
+  --color-border: #e0d4cc;
+  --color-border-light: #ede2d8;
+  --color-accent-gold: #e8a04a;
+  --color-accent-cyan: #00b4d8;
+  --color-accent-cyan-soft: #e0f7fa;
+  --color-success: #30b868;
+  --color-error: #cf4f4f;
+  --color-whatsapp: #25d366;
+  --color-on-primary: #ffffff;
+
+  /* Product accents (GameProductTheme light) */
+  --product-main: #d86438;
+  --product-main-soft: #faf0e8;
+  --product-starline: #00838f;
+  --product-starline-soft: #e0f7fa;
+  --product-jackpot: #e8a04a;
+  --product-jackpot-soft: #fff6e8;
+  --product-night: #1565c0;
+  --product-night-soft: #e8effe;
+  --product-lottery: #9c27b0;
+  --product-lottery-soft: #f3e5f5;
+
+  /* App night charcoal — footer / dark bands */
+  --color-ink: #16110e;
+  --color-ink-elevated: #1e1814;
+  --color-ink-border: #3a2e28;
+  --color-ink-muted: #8a7a70;
+  --color-ink-text: #f5eee8;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+
+  --shadow-soft: 0 8px 28px rgb(31 26 24 / 6%);
+  --header-h: 68px;
+  --ticker-h: 40px;
+  --product-rail-h: 56px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --max-w: 1120px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --press-scale: 0.97;
+}

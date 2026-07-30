@@ -1,0 +1,74 @@
+/* Festival Shubh chrome — activated via html[data-festival] from useFestivalSkin */
+
+:root {
+  --festival-accent: #a63d2f;
+}
+
+html[data-festival] .hero {
+  position: relative;
+}
+
+html[data-festival] .hero::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 12px;
+  border: 1.5px solid color-mix(in srgb, var(--festival-accent) 55%, transparent);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, #fff 18%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--festival-accent) 22%, transparent);
+  z-index: 2;
+}
+
+html[data-festival] .hero-copy[data-festival-label]::before {
+  content: attr(data-festival-label);
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: color-mix(in srgb, var(--festival-accent) 90%, #000);
+  border: 1px solid color-mix(in srgb, #fff 30%, transparent);
+}
+
+html[data-festival] .charts-page {
+  --charts-fest-line: color-mix(in srgb, var(--festival-accent) 45%, transparent);
+}
+
+html[data-festival] .charts-hero {
+  border-bottom: 2px solid var(--charts-fest-line, transparent);
+  padding-bottom: 1rem;
+}
+
+html[data-festival] .charts-kicker {
+  color: var(--festival-accent);
+}
+
+html[data-festival] .day-chart {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--festival-accent) 28%, transparent);
+}
+
+html[data-festival] .day-chart-th {
+  color: color-mix(in srgb, var(--festival-accent) 70%, currentColor);
+}
+
+html[data-festival="diwali"] {
+  --festival-accent: #d4a017;
+}
+html[data-festival="ganesh"] {
+  --festival-accent: #e07020;
+}
+html[data-festival="navratri"] {
+  --festival-accent: #b83b5e;
+}
+html[data-festival="rakhi"] {
+  --festival-accent: #c75b7a;
+}
+html[data-festival="shubh"] {
+  --festival-accent: #a63d2f;
+}

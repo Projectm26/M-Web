@@ -1,0 +1,149 @@
+.rates-section {
+  position: relative;
+}
+
+.rates-sheet {
+  border-radius: 20px;
+  background: var(--color-ink);
+  border: 1px solid var(--color-ink-border);
+  box-shadow: 0 6px 18px rgb(31 26 24 / 4.5%);
+  overflow: hidden;
+}
+
+.rates-sheet-head {
+  display: none;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  gap: 16px;
+  padding: 12px 18px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(245 238 232 / 42%);
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.rates-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "type multi"
+    "payout payout";
+  align-items: center;
+  gap: 6px 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
+  transition: background 140ms var(--ease-out);
+}
+
+.rate-row:last-child {
+  border-bottom: 0;
+}
+
+.rate-row:hover {
+  background: rgb(255 255 255 / 3.5%);
+}
+
+.rate-row-type {
+  grid-area: type;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgb(245 238 232 / 88%);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rate-row-payout {
+  grid-area: payout;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.rate-row-bet {
+  font-size: 0.92rem;
+  color: rgb(245 238 232 / 48%);
+}
+
+.rate-row-arrow {
+  font-size: 0.85rem;
+  color: rgb(232 160 74 / 55%);
+}
+
+.rate-row-win {
+  font-size: 1.15rem;
+  color: var(--color-accent-gold);
+}
+
+.rate-row-multi {
+  grid-area: multi;
+  justify-self: end;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: rgb(232 160 74 / 78%);
+}
+
+.rates-row-skeleton {
+  height: 58px;
+  border-radius: 0;
+  opacity: 0.28;
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
+}
+
+@media (max-width: 719px) {
+  .rate-row {
+    padding: 13px 14px;
+  }
+
+  .rate-row-type {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.9rem;
+  }
+
+  .rate-row-win {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 720px) {
+  .rates-sheet-head {
+    display: grid;
+    padding: 12px 22px;
+  }
+
+  .rate-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+    grid-template-areas: "type payout multi";
+    gap: 16px;
+    padding: 15px 22px;
+  }
+
+  .rate-row-win {
+    font-size: 1.2rem;
+  }
+
+  .rate-row-multi {
+    min-width: 3.5rem;
+    text-align: right;
+  }
+}

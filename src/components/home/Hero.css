@@ -1,0 +1,297 @@
+/* Hero — full-bleed board light
+   Content budget: brand · one line · one CTA · optional device */
+
+.hero {
+  --hero-pad-y: 3.5rem;
+  --hero-pad-y-end: 3.75rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #fff8f2;
+  background: #16110e;
+}
+
+/* —— Media plane (edge to edge) —— */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% 40%;
+  transform: scale(1.03);
+  animation: hero-drift 24s ease-in-out infinite alternate;
+}
+
+.hero-media-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgb(18 12 9 / 92%) 0%,
+      rgb(22 15 11 / 78%) 38%,
+      rgb(22 15 11 / 42%) 68%,
+      rgb(22 15 11 / 28%) 100%
+    ),
+    linear-gradient(to top, var(--color-bg) 0%, transparent 26%);
+}
+
+/* —— Frame / spacing —— */
+.hero-frame {
+  position: relative;
+  display: grid;
+  align-items: end;
+  min-height: 26rem;
+  padding-top: var(--hero-pad-y);
+  padding-bottom: var(--hero-pad-y-end);
+}
+
+.hero--with-phone .hero-frame {
+  gap: 2rem;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  max-width: 16em;
+  animation: hero-in 640ms var(--ease-out) both;
+}
+
+.hero-brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 14vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  color: #fffaf4;
+}
+
+.hero-brand-accent {
+  color: var(--color-accent-gold);
+}
+
+.hero-line {
+  margin: 0;
+  max-width: 22ch;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgb(255 248 242 / 74%);
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.35rem;
+  min-height: 3.1rem;
+  padding: 0 1.35rem;
+  border-radius: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  background: var(--color-primary);
+  box-shadow: 0 12px 28px rgb(216 100 56 / 32%);
+  transition:
+    background 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+
+.hero-cta:hover {
+  background: var(--color-primary-dark);
+}
+
+.hero-cta:active {
+  transform: scale(var(--press-scale));
+}
+
+/* —— Optional device (desktop campaigns only) —— */
+.hero-device {
+  display: none;
+}
+
+.hero-device-shell {
+  width: 15.5rem;
+  border-radius: 1.75rem;
+  padding: 0.55rem;
+  background: #1f1713;
+  box-shadow: 0 28px 56px rgb(0 0 0 / 40%);
+  animation: hero-in 720ms var(--ease-out) 80ms both;
+}
+
+.hero-device-screen {
+  border-radius: 1.3rem;
+  overflow: hidden;
+  background: #faf7f5;
+  color: var(--color-text);
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.hero-device-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: -0.03em;
+}
+
+.hero-device-mark {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.45rem;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.hero-device-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.hero-device-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 0.65rem;
+  background: #fff;
+  border: 1px solid var(--color-border-light);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.hero-device-row--main {
+  border-left: 3px solid var(--product-main);
+}
+
+.hero-device-row--star {
+  border-left: 3px solid var(--product-starline);
+}
+
+.hero-device-row--jack {
+  border-left: 3px solid var(--product-jackpot);
+}
+
+.hero-device-row--night {
+  border-left: 3px solid var(--product-night);
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1.03) translate(0, 0);
+  }
+  to {
+    transform: scale(1.07) translate(-1%, 0.6%);
+  }
+}
+
+@media (min-width: 760px) {
+  .hero {
+    --hero-pad-y: 4.5rem;
+    --hero-pad-y-end: 5rem;
+  }
+
+  .hero-frame {
+    min-height: 32rem;
+  }
+
+  .hero-copy {
+    gap: 1.4rem;
+    max-width: 18em;
+  }
+
+  .hero-brand {
+    font-size: clamp(4.25rem, 7vw, 5.5rem);
+  }
+
+  .hero-line {
+    font-size: 1.12rem;
+    max-width: 24ch;
+  }
+
+  .hero-cta {
+    min-height: 3.25rem;
+    padding-inline: 1.5rem;
+  }
+
+  .hero--with-phone .hero-frame {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 3rem;
+  }
+
+  .hero--with-phone .hero-device {
+    display: block;
+    padding-bottom: 0.25rem;
+  }
+}
+
+@media (max-width: 759px) {
+  .hero {
+    --hero-pad-y: 2.25rem;
+    --hero-pad-y-end: 2.5rem;
+  }
+
+  .hero-frame {
+    min-height: 18.5rem;
+  }
+
+  .hero-copy {
+    max-width: none;
+    gap: 0.95rem;
+  }
+
+  .hero-brand {
+    font-size: clamp(2.5rem, 12vw, 3.25rem);
+  }
+
+  .hero-line {
+    max-width: 26ch;
+    font-size: 0.95rem;
+  }
+
+  .hero-cta {
+    width: 100%;
+    max-width: none;
+    min-height: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-media-img,
+  .hero-copy,
+  .hero-device-shell {
+    animation: none !important;
+  }
+}

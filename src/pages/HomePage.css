@@ -1,0 +1,13 @@
+.home-error-wrap {
+  padding-top: var(--space-6);
+}
+
+.home-error-wrap .state-block {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
+}
+
+.home-error-wrap .btn {
+  width: fit-content;
+}

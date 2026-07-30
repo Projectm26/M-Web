@@ -1,0 +1,103 @@
+.section-head {
+  margin-bottom: var(--space-5);
+  max-width: 40rem;
+}
+
+.section-head-ornament {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.section-head-ornament span {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.section-head-ornament span:nth-child(1) {
+  width: 18px;
+  opacity: 1;
+}
+
+.section-head-ornament span:nth-child(2) {
+  width: 8px;
+  opacity: 0.55;
+}
+
+.section-head-ornament span:nth-child(3) {
+  width: 4px;
+  opacity: 0.3;
+}
+
+.section-head-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.section-head-title {
+  margin-top: 6px;
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  letter-spacing: -0.035em;
+  color: var(--color-text);
+}
+
+.section-head-copy {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 42ch;
+}
+
+.section-head--night .section-head-eyebrow {
+  color: var(--product-night);
+}
+
+.section-head--night .section-head-ornament span {
+  background: var(--product-night);
+}
+
+.section-head--starline .section-head-eyebrow {
+  color: var(--product-starline);
+}
+
+.section-head--starline .section-head-ornament span {
+  background: var(--product-starline);
+}
+
+.section-head--jackpot .section-head-eyebrow {
+  color: #b87a16;
+}
+
+.section-head--jackpot .section-head-ornament span {
+  background: var(--product-jackpot);
+}
+
+.section-head--lottery .section-head-eyebrow {
+  color: var(--color-primary-dark);
+}
+
+.section-head--lottery .section-head-ornament span {
+  background: var(--color-primary);
+}
+
+@media (max-width: 639px) {
+  .section-head {
+    margin-bottom: var(--space-4);
+  }
+
+  .section-head-title {
+    font-size: 1.45rem;
+  }
+
+  .section-head-copy {
+    font-size: 0.92rem;
+    max-width: 34ch;
+  }
+}
