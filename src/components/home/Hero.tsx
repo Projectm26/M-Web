@@ -101,13 +101,11 @@ export function Hero(_props: HeroProps) {
               <div className="hero-device-screen">
                 <div className="hero-device-bar">
                   <img
-                    className="hero-device-mark"
-                    src="/brand/app-icon.png"
+                    className="hero-device-logo"
+                    src="/brand/brand_logo_horizontal.png"
                     alt=""
-                    width={22}
-                    height={22}
+                    height={20}
                   />
-                  <span>Shubh555</span>
                 </div>
                 <div className="hero-device-list">
                   {rows.slice(0, 3).map((row) => (

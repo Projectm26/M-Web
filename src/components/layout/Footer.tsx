@@ -30,15 +30,11 @@ export function Footer({ supportNumber = "" }: FooterProps) {
           <div className="footer-brand-block">
             <Link to="/" className="footer-brand" aria-label="Shubh555 home">
               <img
-                className="footer-brand-mark-img"
-                src="/brand/app-icon.png"
-                alt=""
-                width={40}
-                height={40}
+                className="footer-brand-logo-img"
+                src="/brand/brand_logo_horizontal.png"
+                alt="Shubh555"
+                height={36}
               />
-              <span className="footer-brand-text">
-                Shubh<span>555</span>
-              </span>
             </Link>
             <p className="footer-tagline">
               Live results, charts, and the official app — Sunset Pulse markets in one place.

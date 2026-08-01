@@ -53,6 +53,16 @@
   flex-shrink: 0;
 }
 
+.footer-brand-logo-img {
+  display: block;
+  height: 36px;
+  width: auto;
+  max-width: min(200px, 70vw);
+  object-fit: contain;
+  /* Horizontal lockup has black wordmark — invert for dark footer */
+  filter: brightness(0) invert(1);
+}
+
 .footer-brand-text {
   font-family: var(--font-display);
   font-weight: 800;

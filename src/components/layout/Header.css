@@ -52,6 +52,15 @@
   flex-shrink: 0;
 }
 
+.brand-logo-img {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: min(168px, 46vw);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .brand-text {
   font-family: var(--font-display);
   font-weight: 800;
