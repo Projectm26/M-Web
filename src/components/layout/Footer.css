@@ -44,6 +44,15 @@
   box-shadow: 0 8px 18px rgb(216 100 56 / 28%);
 }
 
+.footer-brand-mark-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 8px 18px rgb(216 100 56 / 28%);
+  flex-shrink: 0;
+}
+
 .footer-brand-text {
   font-family: var(--font-display);
   font-weight: 800;

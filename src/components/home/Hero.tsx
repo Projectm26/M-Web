@@ -100,7 +100,13 @@ export function Hero(_props: HeroProps) {
             <div className="hero-device-shell">
               <div className="hero-device-screen">
                 <div className="hero-device-bar">
-                  <span className="hero-device-mark">D</span>
+                  <img
+                    className="hero-device-mark"
+                    src="/brand/app-icon.png"
+                    alt=""
+                    width={22}
+                    height={22}
+                  />
                   <span>Shubh555</span>
                 </div>
                 <div className="hero-device-list">

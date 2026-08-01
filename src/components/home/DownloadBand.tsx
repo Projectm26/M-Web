@@ -24,7 +24,7 @@ export function DownloadBand() {
         <div className="download-band-copy">
           <p className="download-band-kicker">Official Android app</p>
           <h2 id="download-band-title" className="download-band-brand">
-            Dhan<span>555</span>
+            Shubh<span>555</span>
           </h2>
           <p className="download-band-lead">
             Bid on Main, Night, Starline, Jackpot &amp; Lottery with wallet, charts, and support in

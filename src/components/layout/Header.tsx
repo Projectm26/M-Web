@@ -57,9 +57,13 @@ export function Header(_props: HeaderProps) {
     <header className="site-header">
       <div className="site-header-inner container">
         <NavLink to="/" className="brand" aria-label="Shubh555 home">
-          <span className="brand-mark" aria-hidden>
-            S
-          </span>
+          <img
+            className="brand-mark-img"
+            src="/brand/app-icon.png"
+            alt=""
+            width={36}
+            height={36}
+          />
           <span className="brand-text">
             Shubh<span className="brand-555">555</span>
           </span>

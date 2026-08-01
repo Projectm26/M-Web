@@ -159,6 +159,7 @@
   font-size: 0.72rem;
   color: #fff;
   background: var(--color-primary);
+  object-fit: cover;
 }
 
 .hero-device-list {

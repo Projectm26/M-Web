@@ -29,9 +29,13 @@ export function Footer({ supportNumber = "" }: FooterProps) {
         <div className="footer-top">
           <div className="footer-brand-block">
             <Link to="/" className="footer-brand" aria-label="Shubh555 home">
-              <span className="footer-brand-mark" aria-hidden>
-                S
-              </span>
+              <img
+                className="footer-brand-mark-img"
+                src="/brand/app-icon.png"
+                alt=""
+                width={40}
+                height={40}
+              />
               <span className="footer-brand-text">
                 Shubh<span>555</span>
               </span>
