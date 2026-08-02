@@ -245,7 +245,11 @@
     gap: var(--space-3);
   }
 
-  .container.charts-page-inner,
+  .container.charts-page-inner {
+    width: 100%;
+    padding-inline: 12px;
+  }
+
   .container.charts-page-inner--day {
     width: 100%;
     padding-inline: 2px;

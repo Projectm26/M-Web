@@ -195,7 +195,8 @@
 .week-chart-badge.is-highlight {
   font-size: 0.8rem;
   font-weight: 800;
-  color: var(--chart-accent);
+  /* Non-family jodi: black (not brand orange). Family red stays below. */
+  color: #111;
 }
 
 .week-chart-badge.is-placeholder {
