@@ -11,7 +11,7 @@ export function PromoBanner() {
           <p className="promo-banner-kicker">Official Android app</p>
           <h2>Place bids where the boards light up</h2>
           <p className="promo-banner-sub">
-            Watch results here. Bid Main, Night, Starline &amp; Lottery in the app.
+            Watch results here. Bid Main, Night, Bombay Starline &amp; Lottery in the app.
           </p>
         </div>
         <button type="button" className="btn btn-primary promo-banner-cta" onClick={openApkDownload}>

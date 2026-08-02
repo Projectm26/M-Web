@@ -6,11 +6,11 @@ import "./Faq.css";
 const FAQ_ITEMS = [
   {
     q: "What is Shubh555?",
-    a: "Shubh555 is the official app for matka markets — Main, Night Market, Starline, Jackpot, and Lottery — with live results, charts, wallet deposits, and withdrawals.",
+    a: "Shubh555 is the official app for matka markets — Main, Night Market, Bombay Starline, Bombay Jackpot, and Lottery — with live results, charts, wallet deposits, and withdrawals.",
   },
   {
     q: "Which products can I play?",
-    a: "Main markets through the day, Night Market in the evening, plus Starline, Jackpot, and Lottery. This website shows results for reference; place bids only in the official Android app.",
+    a: "Main markets through the day, Night Market in the evening, plus Bombay Starline, Bombay Jackpot, and Lottery. This website shows results for reference; place bids only in the official Android app.",
   },
   {
     q: "What is Night Market?",
@@ -22,7 +22,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "How do I place a bid?",
-    a: "Download the official Shubh555 app, add balance to your wallet, open the market you want (Main, Night, Starline, Jackpot, or Lottery), and submit before the game closes.",
+    a: "Download the official Shubh555 app, add balance to your wallet, open the market you want (Main, Night, Bombay Starline, Bombay Jackpot, or Lottery), and submit before the game closes.",
   },
   {
     q: "How does Lottery work?",

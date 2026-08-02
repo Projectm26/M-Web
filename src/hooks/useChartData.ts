@@ -94,8 +94,8 @@ export interface ChartHubLists {
 function isSummaryName(name: string) {
   return (
     name.toLowerCase().includes("testing") ||
-    /^Jackpot\b/i.test(name) ||
-    /^Starline\b/i.test(name)
+    /^(?:Bombay\s+)?Jackpot\b/i.test(name) ||
+    /^(?:Bombay\s+)?Starline\b/i.test(name)
   );
 }
 

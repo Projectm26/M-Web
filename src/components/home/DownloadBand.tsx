@@ -27,7 +27,7 @@ export function DownloadBand() {
             Shubh<span>555</span>
           </h2>
           <p className="download-band-lead">
-            Bid on Main, Night, Starline, Jackpot &amp; Lottery with wallet, charts, and support in
+            Bid on Main, Night, Bombay Starline, Bombay Jackpot &amp; Lottery with wallet, charts, and support in
             one place.
           </p>
           <p className="download-band-meta">

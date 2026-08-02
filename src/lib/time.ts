@@ -50,7 +50,7 @@ export function pickCurrentTimedGame<T extends { result_time: string }>(
   return current;
 }
 
-export function stripTimeFromName(name?: string, fallback = "Jackpot"): string {
+export function stripTimeFromName(name?: string, fallback = "Bombay Jackpot"): string {
   if (!name) return fallback;
   const cleaned = name.replace(/\s*\d{1,2}:\d{2}\s*(AM|PM|am|pm)?/gi, "").trim();
   return cleaned || fallback;

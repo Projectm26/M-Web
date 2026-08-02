@@ -52,8 +52,8 @@ export const FALLBACK_HERO_CAMPAIGN: HeroCampaign = {
   phonePreview: {
     rows: [
       { label: "Kalyan", result: "482-49", tone: "main" },
-      { label: "Starline", result: "7", tone: "starline" },
-      { label: "Jackpot", result: "39", tone: "jackpot" },
+      { label: "Bombay Starline", result: "7", tone: "starline" },
+      { label: "Bombay Jackpot", result: "39", tone: "jackpot" },
     ],
   },
 };

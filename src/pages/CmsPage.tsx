@@ -33,8 +33,8 @@ const EMPTY: CmsCampaign = {
   phonePreview: {
     rows: [
       { label: "Kalyan", result: "***-**-***", tone: "main" },
-      { label: "Starline", result: "***-*", tone: "starline" },
-      { label: "Jackpot", result: "**", tone: "jackpot" },
+      { label: "Bombay Starline", result: "***-*", tone: "starline" },
+      { label: "Bombay Jackpot", result: "**", tone: "jackpot" },
     ],
   },
 };

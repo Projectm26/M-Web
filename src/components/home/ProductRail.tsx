@@ -3,8 +3,8 @@ import "./ProductRail.css";
 const PRODUCTS = [
   { id: "markets", label: "Main", tone: "main" },
   { id: "night", label: "Night", tone: "night" },
-  { id: "starline", label: "Starline", tone: "starline" },
-  { id: "jackpot", label: "Jackpot", tone: "jackpot" },
+  { id: "starline", label: "Bombay Starline", tone: "starline" },
+  { id: "jackpot", label: "Bombay Jackpot", tone: "jackpot" },
   { id: "lottery", label: "Lottery", tone: "lottery" },
 ] as const;
 

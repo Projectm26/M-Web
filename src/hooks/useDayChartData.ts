@@ -36,25 +36,25 @@ const DAY_CHART_META: Record<
   "starline-day": {
     product: "starline",
     night: 0,
-    title: "Starline Day",
+    title: "Bombay Starline Day",
     subtitle: "Day games · one column per game",
   },
   "starline-night": {
     product: "starline",
     night: 1,
-    title: "Starline Night",
+    title: "Bombay Starline Night",
     subtitle: "Night games · one column per game",
   },
   "jackpot-day": {
     product: "jackpot",
     night: 0,
-    title: "Jackpot Day",
+    title: "Bombay Jackpot Day",
     subtitle: "Day games · one column per game",
   },
   "jackpot-night": {
     product: "jackpot",
     night: 1,
-    title: "Jackpot Night",
+    title: "Bombay Jackpot Night",
     subtitle: "Night games · one column per game",
   },
 };

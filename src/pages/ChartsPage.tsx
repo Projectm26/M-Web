@@ -76,7 +76,7 @@ function ChartsHub() {
           <p className="charts-kicker">Live boards</p>
           <h1>Charts</h1>
           <p className="charts-lead">
-            Main market week charts plus Starline &amp; Jackpot 12-hour day/night boards —
+            Main market week charts plus Bombay Starline &amp; Bombay Jackpot 12-hour day/night boards —
             same layout as the Shubh555 app.
           </p>
         </header>
@@ -126,7 +126,7 @@ function ChartsHub() {
               })}
             </HubSection>
 
-            <HubSection title="Starline & Jackpot day charts" tone="daypart" empty="">
+            <HubSection title="Bombay Starline & Bombay Jackpot day charts" tone="daypart" empty="">
               {DAY_CHART_LINKS.map((kind) => {
                 const meta = dayChartMeta(kind);
                 const isNight = meta.night === 1;

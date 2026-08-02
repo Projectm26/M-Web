@@ -26,8 +26,8 @@ export function LiveMarkets({
 
   const jackpotTime = currentJackpot?.result_time;
   const jackpotName =
-    stripTimeFromName(jackpotSummary?.game_name || currentJackpot?.game_name, "Jackpot") ||
-    "Jackpot";
+    stripTimeFromName(jackpotSummary?.game_name || currentJackpot?.game_name, "Bombay Jackpot") ||
+    "Bombay Jackpot";
   const jackpotDisplay =
     jackpotSummary?.resultData || currentJackpot?.resultData || "---";
 
@@ -39,7 +39,7 @@ export function LiveMarkets({
   );
   const starlineTitle = stripTimeFromName(
     starlineSummary?.game_name || currentStarline?.game_name,
-    "Starline",
+    "Bombay Starline",
   );
 
   const empty =
@@ -52,7 +52,7 @@ export function LiveMarkets({
           tone="main"
           eyebrow="Open · Close · Charts"
           title="Live Markets"
-          copy="Main boards, current Starline & Jackpot — declared results through the day."
+          copy="Main boards, current Bombay Starline & Bombay Jackpot — declared results through the day."
         />
 
         <div id="jackpot" className="section-anchor" aria-hidden />

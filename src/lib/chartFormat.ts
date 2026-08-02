@@ -244,6 +244,6 @@ export function chartTitle(kind: ChartKind, name?: string | null): string {
   const base = name?.trim() || "Market";
   if (kind === "jodi") return `${base} · Jodi Chart`;
   if (kind === "pana") return `${base} · Pana Chart`;
-  if (kind === "starline") return `${base} · Starline Chart`;
-  return `${base} · Jackpot Chart`;
+  if (kind === "starline") return `${base} · Bombay Starline Chart`;
+  return `${base} · Bombay Jackpot Chart`;
 }

@@ -72,8 +72,8 @@ interface HomeData {
 function isSummaryMarketName(name: string) {
   return (
     name.toLowerCase().includes("testing") ||
-    /^Jackpot\b/i.test(name) ||
-    /^Starline\b/i.test(name)
+    /^(?:Bombay\s+)?Jackpot\b/i.test(name) ||
+    /^(?:Bombay\s+)?Starline\b/i.test(name)
   );
 }
 
@@ -249,11 +249,11 @@ export function useHomeData(): HomeData {
   }, [games]);
 
   const jackpotSummary = useMemo(() => {
-    return games.find((g) => /^Jackpot\b/i.test(g.game_name || "")) ?? null;
+    return games.find((g) => /^(?:Bombay\s+)?Jackpot\b/i.test(g.game_name || "")) ?? null;
   }, [games]);
 
   const starlineSummary = useMemo(() => {
-    return games.find((g) => /^Starline\b/i.test(g.game_name || "")) ?? null;
+    return games.find((g) => /^(?:Bombay\s+)?Starline\b/i.test(g.game_name || "")) ?? null;
   }, [games]);
 
   const liveResults = useMemo(() => {

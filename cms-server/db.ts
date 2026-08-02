@@ -166,7 +166,7 @@ function seedFromJson(db: InstanceType<typeof Database>) {
         kicker: "Declared results · Daily markets",
         brand: "Shubh555",
         tagline:
-          "Today's open–close boards on the web. Play Main, Night, Starline & Lottery in the official app.",
+          "Today's open–close boards on the web. Play Main, Night, Bombay Starline & Lottery in the official app.",
         ctaLabel: "Download Official App",
         showSupportLinks: true,
         backgroundImage: "/media/heroes/sunset.jpg",
@@ -176,8 +176,8 @@ function seedFromJson(db: InstanceType<typeof Database>) {
         phonePreview: {
           rows: [
             { label: "Kalyan", result: "482-49", tone: "main" },
-            { label: "Starline", result: "7", tone: "starline" },
-            { label: "Jackpot", result: "39", tone: "jackpot" },
+            { label: "Bombay Starline", result: "7", tone: "starline" },
+            { label: "Bombay Jackpot", result: "39", tone: "jackpot" },
           ],
         },
       },
