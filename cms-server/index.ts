@@ -8,6 +8,7 @@ import { cors } from "hono/cors";
 import {
   DATA_DIR,
   UPLOADS_DIR,
+  DEFAULT_DESIGN,
   deleteCampaign,
   getCampaign,
   getDefaultCampaignId,
@@ -75,6 +76,17 @@ function parseCampaignBody(body: Record<string, unknown>, idFallback?: string): 
   const id = String(body.id || idFallback || "").trim();
   if (!id) return null;
   const layout = body.layout === "image" ? "image" : "phone";
+  const designRaw =
+    body.design && typeof body.design === "object"
+      ? (body.design as CampaignDto["design"])
+      : undefined;
+  const design = {
+    ...DEFAULT_DESIGN,
+    ...(designRaw || {}),
+    showSupport:
+      designRaw?.showSupport ??
+      (body.showSupportLinks !== false),
+  } as CampaignDto["design"];
   return {
     id,
     active: Boolean(body.active),
@@ -85,7 +97,7 @@ function parseCampaignBody(body: Record<string, unknown>, idFallback?: string): 
     brand: String(body.brand ?? "Shubh555"),
     tagline: String(body.tagline ?? ""),
     ctaLabel: String(body.ctaLabel ?? "Download Official App"),
-    showSupportLinks: body.showSupportLinks !== false,
+    showSupportLinks: design.showSupport,
     backgroundImage: String(body.backgroundImage || ""),
     objectPosition: body.objectPosition ? String(body.objectPosition) : undefined,
     layout,
@@ -94,6 +106,7 @@ function parseCampaignBody(body: Record<string, unknown>, idFallback?: string): 
       body.phonePreview && typeof body.phonePreview === "object"
         ? (body.phonePreview as CampaignDto["phonePreview"])
         : undefined,
+    design,
   };
 }
 

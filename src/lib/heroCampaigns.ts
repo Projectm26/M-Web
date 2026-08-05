@@ -2,11 +2,46 @@ export type HeroLayout = "phone" | "image";
 
 export type HeroPhoneTone = "main" | "starline" | "jackpot" | "night";
 
+export type HeroTextAlign = "left" | "center" | "right";
+
+export type HeroCtaAction = "download" | "link" | "whatsapp" | "none";
+
+export type HeroCtaStyle = "solid" | "outline" | "soft";
+
 export interface HeroPhoneRow {
   label: string;
   result: string;
   tone?: HeroPhoneTone;
 }
+
+/** Visual / UX controls for the public hero. */
+export interface HeroDesign {
+  showKicker: boolean;
+  showBrand: boolean;
+  showTagline: boolean;
+  showCta: boolean;
+  showSupport: boolean;
+  /** Dark wash over the photo, 0–100. */
+  overlayOpacity: number;
+  textAlign: HeroTextAlign;
+  ctaAction: HeroCtaAction;
+  /** Used when ctaAction is "link". */
+  ctaUrl: string;
+  ctaStyle: HeroCtaStyle;
+}
+
+export const DEFAULT_HERO_DESIGN: HeroDesign = {
+  showKicker: false,
+  showBrand: true,
+  showTagline: true,
+  showCta: true,
+  showSupport: false,
+  overlayOpacity: 72,
+  textAlign: "left",
+  ctaAction: "download",
+  ctaUrl: "",
+  ctaStyle: "solid",
+};
 
 export interface HeroCampaign {
   id: string;
@@ -18,6 +53,7 @@ export interface HeroCampaign {
   brand: string;
   tagline: string;
   ctaLabel: string;
+  /** @deprecated prefer design.showSupport — kept for older rows */
   showSupportLinks: boolean;
   backgroundImage: string;
   objectPosition?: string;
@@ -26,6 +62,7 @@ export interface HeroCampaign {
   phonePreview?: {
     rows: HeroPhoneRow[];
   };
+  design: HeroDesign;
 }
 
 export interface HeroCampaignsConfig {
@@ -56,12 +93,53 @@ export const FALLBACK_HERO_CAMPAIGN: HeroCampaign = {
       { label: "Bombay Jackpot", result: "39", tone: "jackpot" },
     ],
   },
+  design: { ...DEFAULT_HERO_DESIGN },
 };
 
 const FALLBACK_CONFIG: HeroCampaignsConfig = {
   defaultCampaignId: FALLBACK_HERO_CAMPAIGN.id,
   campaigns: [FALLBACK_HERO_CAMPAIGN],
 };
+
+function clampOpacity(n: unknown): number {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return DEFAULT_HERO_DESIGN.overlayOpacity;
+  return Math.min(100, Math.max(0, Math.round(v)));
+}
+
+export function normalizeHeroDesign(
+  raw: Partial<HeroDesign> | null | undefined,
+  legacyShowSupport?: boolean,
+): HeroDesign {
+  const base = { ...DEFAULT_HERO_DESIGN };
+  if (legacyShowSupport != null) base.showSupport = Boolean(legacyShowSupport);
+  if (!raw || typeof raw !== "object") return base;
+
+  const textAlign =
+    raw.textAlign === "center" || raw.textAlign === "right" ? raw.textAlign : "left";
+  const ctaAction =
+    raw.ctaAction === "link" ||
+    raw.ctaAction === "whatsapp" ||
+    raw.ctaAction === "none" ||
+    raw.ctaAction === "download"
+      ? raw.ctaAction
+      : "download";
+  const ctaStyle =
+    raw.ctaStyle === "outline" || raw.ctaStyle === "soft" ? raw.ctaStyle : "solid";
+
+  return {
+    showKicker: raw.showKicker ?? base.showKicker,
+    showBrand: raw.showBrand ?? base.showBrand,
+    showTagline: raw.showTagline ?? base.showTagline,
+    showCta: raw.showCta ?? base.showCta,
+    showSupport: raw.showSupport ?? base.showSupport,
+    overlayOpacity: clampOpacity(raw.overlayOpacity ?? base.overlayOpacity),
+    textAlign,
+    ctaAction,
+    ctaUrl: String(raw.ctaUrl ?? ""),
+    ctaStyle,
+  };
+}
 
 function parseDay(iso: string | null | undefined): number | null {
   if (!iso) return null;
@@ -80,6 +158,7 @@ function isInWindow(campaign: HeroCampaign, todayMs: number): boolean {
 function normalizeCampaign(raw: Partial<HeroCampaign> | null | undefined): HeroCampaign | null {
   if (!raw || typeof raw.id !== "string" || !raw.id.trim()) return null;
   const layout = raw.layout === "image" ? "image" : "phone";
+  const design = normalizeHeroDesign(raw.design, raw.showSupportLinks);
   return {
     ...FALLBACK_HERO_CAMPAIGN,
     ...raw,
@@ -92,7 +171,7 @@ function normalizeCampaign(raw: Partial<HeroCampaign> | null | undefined): HeroC
     brand: String(raw.brand ?? FALLBACK_HERO_CAMPAIGN.brand),
     tagline: String(raw.tagline ?? FALLBACK_HERO_CAMPAIGN.tagline),
     ctaLabel: String(raw.ctaLabel ?? FALLBACK_HERO_CAMPAIGN.ctaLabel),
-    showSupportLinks: raw.showSupportLinks !== false,
+    showSupportLinks: design.showSupport,
     backgroundImage: String(raw.backgroundImage || FALLBACK_HERO_CAMPAIGN.backgroundImage),
     objectPosition: raw.objectPosition || FALLBACK_HERO_CAMPAIGN.objectPosition,
     layout,
@@ -106,6 +185,7 @@ function normalizeCampaign(raw: Partial<HeroCampaign> | null | undefined): HeroC
           })),
         }
       : FALLBACK_HERO_CAMPAIGN.phonePreview,
+    design,
   };
 }
 
@@ -149,7 +229,6 @@ export function resolveActiveCampaign(
 }
 
 export async function fetchHeroCampaignsConfig(): Promise<HeroCampaignsConfig> {
-  // Prefer local CMS when running; fall back to static JSON.
   try {
     const cmsRes = await fetch("/cms-api/public/hero", { cache: "no-cache" });
     if (cmsRes.ok) {

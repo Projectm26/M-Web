@@ -64,6 +64,27 @@
   animation: hero-in 640ms var(--ease-out) both;
 }
 
+.hero--align-center .hero-copy {
+  align-items: center;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.hero--align-right .hero-copy {
+  align-items: flex-end;
+  text-align: right;
+  margin-left: auto;
+}
+
+.hero-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 248 242 / 72%);
+}
+
 .hero-brand {
   margin: 0;
   font-family: var(--font-display);
@@ -87,17 +108,73 @@
   color: rgb(255 248 242 / 74%);
 }
 
+.hero--align-center .hero-line {
+  max-width: 28ch;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.2rem;
+}
+
+.hero--align-center .hero-actions {
+  justify-content: center;
+}
+
+.hero--align-right .hero-actions {
+  justify-content: flex-end;
+}
+
 .hero-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  margin-top: 0.35rem;
   min-height: 3.1rem;
   padding: 0 1.35rem;
   border-radius: 0.85rem;
   font-family: var(--font-display);
   font-size: 0.98rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: #1f1a18;
+  background: linear-gradient(145deg, #f0b08a, #d86438 55%, #b84e26);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 28%);
+}
+
+.hero-cta--outline {
+  color: #fff8f2;
+  background: transparent;
+  border-color: rgb(255 248 242 / 55%);
+  box-shadow: none;
+}
+
+.hero-cta--soft {
+  color: #fff8f2;
+  background: rgb(255 255 255 / 14%);
+  border-color: rgb(255 255 255 / 18%);
+  backdrop-filter: blur(8px);
+  box-shadow: none;
+}
+
+.hero-support {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.6rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff8f2;
+  text-decoration: none;
+  border: 1px solid rgb(255 248 242 / 28%);
+  background: rgb(0 0 0 / 22%);
+}
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #fff;

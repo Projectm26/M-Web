@@ -63,6 +63,18 @@ export type CmsCampaign = {
   layout: "phone" | "image";
   watermark?: string[];
   phonePreview?: { rows: Array<{ label: string; result: string; tone?: string }> };
+  design: {
+    showKicker: boolean;
+    showBrand: boolean;
+    showTagline: boolean;
+    showCta: boolean;
+    showSupport: boolean;
+    overlayOpacity: number;
+    textAlign: "left" | "center" | "right";
+    ctaAction: "download" | "link" | "whatsapp" | "none";
+    ctaUrl: string;
+    ctaStyle: "solid" | "outline" | "soft";
+  };
 };
 
 export async function verifyCmsKey(key: string) {

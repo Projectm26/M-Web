@@ -1,4 +1,4 @@
-import { Download } from "lucide-react";
+import { Download, MessageCircle } from "lucide-react";
 import { openApkDownload } from "../../hooks/useHomeData";
 import { useHeroCampaign } from "../../hooks/useHeroCampaign";
 import { useFestivalSkin } from "../../hooks/useFestivalSkin";
@@ -38,20 +38,56 @@ function festivalFallbackLabel(id: string): string {
   }
 }
 
-export function Hero(_props: HeroProps) {
+function waLink(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  return digits ? `https://wa.me/${digits}` : "";
+}
+
+export function Hero({ supportNumber = "" }: HeroProps) {
   const { campaign } = useHeroCampaign();
   const festival = useFestivalSkin();
   const { lead, accent } = brandParts(campaign.brand);
+  const design = campaign.design;
   const showPhone = campaign.layout === "phone";
   const rows = campaign.phonePreview?.rows ?? [];
   const festivalLabel = festival
     ? festival.label || festivalFallbackLabel(festival.id)
     : undefined;
 
+  const overlay = Math.min(100, Math.max(0, design.overlayOpacity)) / 100;
+  const shadeStyle = {
+    background: `
+      linear-gradient(
+        100deg,
+        rgb(18 12 9 / ${0.55 + overlay * 0.4}) 0%,
+        rgb(22 15 11 / ${0.35 + overlay * 0.4}) 42%,
+        rgb(22 15 11 / ${0.12 + overlay * 0.28}) 72%,
+        rgb(22 15 11 / ${0.08 + overlay * 0.18}) 100%
+      ),
+      linear-gradient(to top, var(--color-bg) 0%, transparent 26%)
+    `,
+  };
+
+  function onCta() {
+    if (design.ctaAction === "none" || !design.showCta) return;
+    if (design.ctaAction === "link" && design.ctaUrl) {
+      window.open(design.ctaUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    if (design.ctaAction === "whatsapp") {
+      const href = waLink(supportNumber);
+      if (href) window.open(href, "_blank", "noopener,noreferrer");
+      return;
+    }
+    openApkDownload();
+  }
+
+  const supportHref = design.showSupport ? waLink(supportNumber) : "";
+
   return (
     <section
-      className={`hero${showPhone ? " hero--with-phone" : ""}`}
-      aria-labelledby="hero-brand"
+      className={`hero hero--align-${design.textAlign}${showPhone ? " hero--with-phone" : ""}`}
+      aria-labelledby={design.showBrand ? "hero-brand" : undefined}
       data-campaign={campaign.id}
     >
       <div className="hero-media" aria-hidden>
@@ -68,7 +104,7 @@ export function Hero(_props: HeroProps) {
               : undefined
           }
         />
-        <div className="hero-media-shade" />
+        <div className="hero-media-shade" style={shadeStyle} />
       </div>
 
       <div className="hero-frame container">
@@ -76,23 +112,49 @@ export function Hero(_props: HeroProps) {
           className="hero-copy"
           {...(festivalLabel ? { "data-festival-label": festivalLabel } : {})}
         >
-          <h1 id="hero-brand" className="hero-brand">
-            {lead}
-            {accent ? <span className="hero-brand-accent">{accent}</span> : null}
-          </h1>
+          {design.showKicker && campaign.kicker ? (
+            <p className="hero-kicker">{campaign.kicker}</p>
+          ) : null}
 
-          {campaign.tagline ? (
+          {design.showBrand ? (
+            <h1 id="hero-brand" className="hero-brand">
+              {lead}
+              {accent ? <span className="hero-brand-accent">{accent}</span> : null}
+            </h1>
+          ) : null}
+
+          {design.showTagline && campaign.tagline ? (
             <p className="hero-line">{campaign.tagline}</p>
           ) : null}
 
-          <button
-            type="button"
-            className="hero-cta"
-            onClick={openApkDownload}
-          >
-            <Download size={18} strokeWidth={2.4} aria-hidden />
-            {campaign.ctaLabel}
-          </button>
+          <div className="hero-actions">
+            {design.showCta && design.ctaAction !== "none" ? (
+              <button
+                type="button"
+                className={`hero-cta hero-cta--${design.ctaStyle}`}
+                onClick={onCta}
+              >
+                {design.ctaAction === "whatsapp" ? (
+                  <MessageCircle size={18} strokeWidth={2.4} aria-hidden />
+                ) : (
+                  <Download size={18} strokeWidth={2.4} aria-hidden />
+                )}
+                {campaign.ctaLabel}
+              </button>
+            ) : null}
+
+            {supportHref ? (
+              <a
+                className="hero-support"
+                href={supportHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle size={16} strokeWidth={2.4} aria-hidden />
+                WhatsApp
+              </a>
+            ) : null}
+          </div>
         </div>
 
         {showPhone ? (

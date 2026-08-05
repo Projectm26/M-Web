@@ -29,8 +29,35 @@ export type DbCampaignRow = {
   layout: string;
   watermark_json: string | null;
   phone_preview_json: string | null;
+  design_json: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type CampaignDesignDto = {
+  showKicker: boolean;
+  showBrand: boolean;
+  showTagline: boolean;
+  showCta: boolean;
+  showSupport: boolean;
+  overlayOpacity: number;
+  textAlign: "left" | "center" | "right";
+  ctaAction: "download" | "link" | "whatsapp" | "none";
+  ctaUrl: string;
+  ctaStyle: "solid" | "outline" | "soft";
+};
+
+export const DEFAULT_DESIGN: CampaignDesignDto = {
+  showKicker: false,
+  showBrand: true,
+  showTagline: true,
+  showCta: true,
+  showSupport: false,
+  overlayOpacity: 72,
+  textAlign: "left",
+  ctaAction: "download",
+  ctaUrl: "",
+  ctaStyle: "solid",
 };
 
 export type CampaignDto = {
@@ -49,6 +76,7 @@ export type CampaignDto = {
   layout: "phone" | "image";
   watermark?: string[];
   phonePreview?: { rows: Array<{ label: string; result: string; tone?: string }> };
+  design: CampaignDesignDto;
 };
 
 function ensureDirs() {
@@ -56,9 +84,54 @@ function ensureDirs() {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
+function ensureColumn(
+  db: InstanceType<typeof Database>,
+  table: string,
+  column: string,
+  ddl: string,
+) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${ddl}`);
+  }
+}
+
+function normalizeDesign(
+  raw: Partial<CampaignDesignDto> | null | undefined,
+  legacyShowSupport?: boolean,
+): CampaignDesignDto {
+  const base = { ...DEFAULT_DESIGN };
+  if (legacyShowSupport != null) base.showSupport = Boolean(legacyShowSupport);
+  if (!raw || typeof raw !== "object") return base;
+  const opacity = Number(raw.overlayOpacity);
+  return {
+    showKicker: raw.showKicker ?? base.showKicker,
+    showBrand: raw.showBrand ?? base.showBrand,
+    showTagline: raw.showTagline ?? base.showTagline,
+    showCta: raw.showCta ?? base.showCta,
+    showSupport: raw.showSupport ?? base.showSupport,
+    overlayOpacity: Number.isFinite(opacity)
+      ? Math.min(100, Math.max(0, Math.round(opacity)))
+      : base.overlayOpacity,
+    textAlign:
+      raw.textAlign === "center" || raw.textAlign === "right" ? raw.textAlign : "left",
+    ctaAction:
+      raw.ctaAction === "link" ||
+      raw.ctaAction === "whatsapp" ||
+      raw.ctaAction === "none" ||
+      raw.ctaAction === "download"
+        ? raw.ctaAction
+        : "download",
+    ctaUrl: String(raw.ctaUrl ?? ""),
+    ctaStyle:
+      raw.ctaStyle === "outline" || raw.ctaStyle === "soft" ? raw.ctaStyle : "solid",
+  };
+}
+
 export function rowToCampaign(row: DbCampaignRow): CampaignDto {
   let watermark: string[] | undefined;
   let phonePreview: CampaignDto["phonePreview"];
+  let designRaw: Partial<CampaignDesignDto> | undefined;
   try {
     watermark = row.watermark_json ? (JSON.parse(row.watermark_json) as string[]) : undefined;
   } catch {
@@ -71,6 +144,14 @@ export function rowToCampaign(row: DbCampaignRow): CampaignDto {
   } catch {
     phonePreview = undefined;
   }
+  try {
+    designRaw = row.design_json
+      ? (JSON.parse(row.design_json) as Partial<CampaignDesignDto>)
+      : undefined;
+  } catch {
+    designRaw = undefined;
+  }
+  const design = normalizeDesign(designRaw, Boolean(row.show_support_links));
   return {
     id: row.id,
     active: Boolean(row.active),
@@ -81,12 +162,13 @@ export function rowToCampaign(row: DbCampaignRow): CampaignDto {
     brand: row.brand,
     tagline: row.tagline,
     ctaLabel: row.cta_label,
-    showSupportLinks: Boolean(row.show_support_links),
+    showSupportLinks: design.showSupport,
     backgroundImage: row.background_image,
     objectPosition: row.object_position || undefined,
     layout: row.layout === "image" ? "image" : "phone",
     watermark,
     phonePreview,
+    design,
   };
 }
 
@@ -111,6 +193,7 @@ export function openDb() {
       layout TEXT NOT NULL DEFAULT 'phone',
       watermark_json TEXT,
       phone_preview_json TEXT,
+      design_json TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
@@ -120,6 +203,7 @@ export function openDb() {
       value TEXT NOT NULL
     );
   `);
+  ensureColumn(db, "hero_campaigns", "design_json", "TEXT");
 
   const count = db.prepare("SELECT COUNT(*) AS c FROM hero_campaigns").get() as { c: number };
   if (count.c === 0) {
@@ -183,6 +267,7 @@ function seedFromJson(db: InstanceType<typeof Database>) {
             { label: "Bombay Jackpot", result: "39", tone: "jackpot" },
           ],
         },
+        design: { ...DEFAULT_DESIGN, showSupport: true, showKicker: true },
       },
     ];
   }
@@ -191,17 +276,18 @@ function seedFromJson(db: InstanceType<typeof Database>) {
     INSERT INTO hero_campaigns (
       id, active, starts_at, ends_at, priority, kicker, brand, tagline, cta_label,
       show_support_links, background_image, object_position, layout,
-      watermark_json, phone_preview_json, created_at, updated_at
+      watermark_json, phone_preview_json, design_json, created_at, updated_at
     ) VALUES (
       @id, @active, @starts_at, @ends_at, @priority, @kicker, @brand, @tagline, @cta_label,
       @show_support_links, @background_image, @object_position, @layout,
-      @watermark_json, @phone_preview_json, @created_at, @updated_at
+      @watermark_json, @phone_preview_json, @design_json, @created_at, @updated_at
     )
   `);
 
   const now = new Date().toISOString();
   const tx = db.transaction((items: CampaignDto[]) => {
     for (const c of items) {
+      const design = normalizeDesign(c.design, c.showSupportLinks);
       insert.run({
         id: c.id,
         active: c.active ? 1 : 0,
@@ -212,12 +298,13 @@ function seedFromJson(db: InstanceType<typeof Database>) {
         brand: c.brand ?? "Shubh555",
         tagline: c.tagline ?? "",
         cta_label: c.ctaLabel ?? "Download Official App",
-        show_support_links: c.showSupportLinks === false ? 0 : 1,
+        show_support_links: design.showSupport ? 1 : 0,
         background_image: c.backgroundImage,
         object_position: c.objectPosition ?? null,
         layout: c.layout === "image" ? "image" : "phone",
         watermark_json: c.watermark ? JSON.stringify(c.watermark) : null,
         phone_preview_json: c.phonePreview ? JSON.stringify(c.phonePreview) : null,
+        design_json: JSON.stringify(design),
         created_at: now,
         updated_at: now,
       });
@@ -259,36 +346,38 @@ export function setDefaultCampaignId(db: InstanceType<typeof Database>, id: stri
 
 export function upsertCampaign(db: InstanceType<typeof Database>, campaign: CampaignDto, isNew: boolean) {
   const now = new Date().toISOString();
+  const design = normalizeDesign(campaign.design, campaign.showSupportLinks);
+  const bind = {
+    id: campaign.id,
+    active: campaign.active ? 1 : 0,
+    starts_at: campaign.startsAt,
+    ends_at: campaign.endsAt,
+    priority: campaign.priority,
+    kicker: campaign.kicker,
+    brand: campaign.brand,
+    tagline: campaign.tagline,
+    cta_label: campaign.ctaLabel,
+    show_support_links: design.showSupport ? 1 : 0,
+    background_image: campaign.backgroundImage,
+    object_position: campaign.objectPosition ?? null,
+    layout: campaign.layout,
+    watermark_json: campaign.watermark ? JSON.stringify(campaign.watermark) : null,
+    phone_preview_json: campaign.phonePreview ? JSON.stringify(campaign.phonePreview) : null,
+    design_json: JSON.stringify(design),
+    updated_at: now,
+  };
   if (isNew) {
     db.prepare(`
       INSERT INTO hero_campaigns (
         id, active, starts_at, ends_at, priority, kicker, brand, tagline, cta_label,
         show_support_links, background_image, object_position, layout,
-        watermark_json, phone_preview_json, created_at, updated_at
+        watermark_json, phone_preview_json, design_json, created_at, updated_at
       ) VALUES (
         @id, @active, @starts_at, @ends_at, @priority, @kicker, @brand, @tagline, @cta_label,
         @show_support_links, @background_image, @object_position, @layout,
-        @watermark_json, @phone_preview_json, @created_at, @updated_at
+        @watermark_json, @phone_preview_json, @design_json, @created_at, @updated_at
       )
-    `).run({
-      id: campaign.id,
-      active: campaign.active ? 1 : 0,
-      starts_at: campaign.startsAt,
-      ends_at: campaign.endsAt,
-      priority: campaign.priority,
-      kicker: campaign.kicker,
-      brand: campaign.brand,
-      tagline: campaign.tagline,
-      cta_label: campaign.ctaLabel,
-      show_support_links: campaign.showSupportLinks ? 1 : 0,
-      background_image: campaign.backgroundImage,
-      object_position: campaign.objectPosition ?? null,
-      layout: campaign.layout,
-      watermark_json: campaign.watermark ? JSON.stringify(campaign.watermark) : null,
-      phone_preview_json: campaign.phonePreview ? JSON.stringify(campaign.phonePreview) : null,
-      created_at: now,
-      updated_at: now,
-    });
+    `).run({ ...bind, created_at: now });
   } else {
     db.prepare(`
       UPDATE hero_campaigns SET
@@ -306,26 +395,10 @@ export function upsertCampaign(db: InstanceType<typeof Database>, campaign: Camp
         layout = @layout,
         watermark_json = @watermark_json,
         phone_preview_json = @phone_preview_json,
+        design_json = @design_json,
         updated_at = @updated_at
       WHERE id = @id
-    `).run({
-      id: campaign.id,
-      active: campaign.active ? 1 : 0,
-      starts_at: campaign.startsAt,
-      ends_at: campaign.endsAt,
-      priority: campaign.priority,
-      kicker: campaign.kicker,
-      brand: campaign.brand,
-      tagline: campaign.tagline,
-      cta_label: campaign.ctaLabel,
-      show_support_links: campaign.showSupportLinks ? 1 : 0,
-      background_image: campaign.backgroundImage,
-      object_position: campaign.objectPosition ?? null,
-      layout: campaign.layout,
-      watermark_json: campaign.watermark ? JSON.stringify(campaign.watermark) : null,
-      phone_preview_json: campaign.phonePreview ? JSON.stringify(campaign.phonePreview) : null,
-      updated_at: now,
-    });
+    `).run(bind);
   }
 }
 
