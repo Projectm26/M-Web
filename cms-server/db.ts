@@ -5,7 +5,10 @@ import Database from "better-sqlite3";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const WEB_ROOT = path.resolve(__dirname, "..");
-export const DATA_DIR = path.join(WEB_ROOT, "data");
+/** Override with CMS_DATA_DIR=/app/data on Railway if needed (default: <repo>/data). */
+export const DATA_DIR = process.env.CMS_DATA_DIR
+  ? path.resolve(process.env.CMS_DATA_DIR)
+  : path.join(WEB_ROOT, "data");
 export const UPLOADS_DIR = path.join(DATA_DIR, "uploads", "heroes");
 export const DB_PATH = path.join(DATA_DIR, "cms.sqlite");
 const SEED_JSON = path.join(WEB_ROOT, "public", "hero-campaigns.json");

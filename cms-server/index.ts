@@ -190,26 +190,62 @@ api.post("/upload", async (c) => {
   const auth = requireKey(c);
   if (!auth.ok) return c.json({ message: auth.message }, auth.status);
 
-  const form = await c.req.parseBody();
-  const file = form.file;
-  if (!file || typeof file === "string") {
-    return c.json({ message: "file required" }, 400);
+  let form: Record<string, string | File | (string | File)[]>;
+  try {
+    form = (await c.req.parseBody()) as Record<string, string | File | (string | File)[]>;
+  } catch (err) {
+    console.error("[cms] upload parseBody failed", err);
+    return c.json({ message: "Could not read upload body (multipart required)" }, 400);
   }
 
-  const name = file.name || "upload.jpg";
+  const raw = form.file;
+  const file = Array.isArray(raw) ? raw[0] : raw;
+  if (!file || typeof file === "string") {
+    return c.json({ message: "file required (form field name: file)" }, 400);
+  }
+
+  const name = (file as File).name || "upload.jpg";
   const ext = path.extname(name).toLowerCase() || ".jpg";
   if (![".jpg", ".jpeg", ".png", ".webp", ".gif"].includes(ext)) {
     return c.json({ message: "Only jpg, png, webp, gif allowed" }, 400);
   }
 
-  const buf = Buffer.from(await file.arrayBuffer());
+  let buf: Buffer;
+  try {
+    buf = Buffer.from(await (file as File).arrayBuffer());
+  } catch (err) {
+    console.error("[cms] upload arrayBuffer failed", err);
+    return c.json({ message: "Could not read uploaded file" }, 400);
+  }
+  if (buf.length === 0) {
+    return c.json({ message: "Empty file" }, 400);
+  }
   if (buf.length > 8 * 1024 * 1024) {
     return c.json({ message: "Max file size 8MB" }, 400);
   }
 
   const filename = `${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  fs.writeFileSync(path.join(UPLOADS_DIR, filename), buf);
+  const dest = path.join(UPLOADS_DIR, filename);
+  try {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    fs.writeFileSync(dest, buf);
+  } catch (err) {
+    const code = err && typeof err === "object" && "code" in err ? String((err as NodeJS.ErrnoException).code) : "";
+    console.error("[cms] upload write failed", { dest, code, err });
+    if (code === "EACCES" || code === "EPERM") {
+      return c.json(
+        {
+          message:
+            "Upload directory not writable. Mount Railway volume at /app/data and ensure the Docker entrypoint runs (no custom startCommand).",
+        },
+        500,
+      );
+    }
+    if (code === "ENOSPC") {
+      return c.json({ message: "Disk full — cannot save upload" }, 500);
+    }
+    return c.json({ message: "Failed to save upload" }, 500);
+  }
   return c.json({ url: `/cms-media/heroes/${filename}` });
 });
 
@@ -217,8 +253,12 @@ app.route("/cms-api", api);
 
 app.get("/cms-media/heroes/:file", (c) => {
   const file = path.basename(c.req.param("file"));
+  if (!file || file === "." || file === "..") {
+    return c.json({ message: "Not found" }, 404);
+  }
   const full = path.join(UPLOADS_DIR, file);
-  if (!full.startsWith(UPLOADS_DIR) || !fs.existsSync(full)) {
+  const root = path.resolve(UPLOADS_DIR) + path.sep;
+  if (!path.resolve(full).startsWith(root) || !fs.existsSync(full)) {
     return c.json({ message: "Not found" }, 404);
   }
   const ext = path.extname(file).toLowerCase();
@@ -238,6 +278,18 @@ app.get("/cms-media/heroes/:file", (c) => {
   });
 });
 
+function uploadsWritable(): boolean {
+  try {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    const probe = path.join(UPLOADS_DIR, `.write-probe-${process.pid}`);
+    fs.writeFileSync(probe, "ok");
+    fs.unlinkSync(probe);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Liveness for Railway / Docker (no auth). */
 app.get("/healthz", (c) =>
   c.json({
@@ -245,6 +297,8 @@ app.get("/healthz", (c) =>
     service: "shubh555-web",
     spa: serveSpa && fs.existsSync(path.join(DIST_DIR, "index.html")),
     cmsAuthConfigured: Boolean(ACCESS_KEY),
+    dataDir: DATA_DIR,
+    uploadsWritable: uploadsWritable(),
   }),
 );
 
@@ -333,7 +387,15 @@ if (!ACCESS_KEY) {
   console.warn("[cms] WARNING: CMS_ACCESS_KEY is empty — admin routes will return 503");
 }
 
+const canWriteUploads = uploadsWritable();
 console.log(`[cms] data dir ${DATA_DIR}`);
+console.log(`[cms] uploads writable=${canWriteUploads} (${UPLOADS_DIR})`);
+if (!canWriteUploads) {
+  console.error(
+    "[cms] ERROR: hero upload directory is not writable — banner upload will fail. " +
+      "Mount volume at /app/data and let docker-entrypoint.sh chown it.",
+  );
+}
 console.log(`[web] listening on http://${HOST}:${PORT} (spa=${serveSpa})`);
 console.log(`[cms] public hero: GET /cms-api/public/hero`);
 console.log(`[web] health: GET /healthz`);

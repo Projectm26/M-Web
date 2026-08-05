@@ -55,6 +55,7 @@ LABEL org.opencontainers.image.title="shubh555-web" \
 ENV NODE_ENV=production \
     PORT=3000 \
     HOST=0.0.0.0 \
+    CMS_DATA_DIR=/app/data \
     NPM_CONFIG_LOGLEVEL=warn
 
 # No python/make/g++ here — native modules come from builder.

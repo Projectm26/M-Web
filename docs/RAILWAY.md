@@ -51,14 +51,26 @@ If the value uses a Railway reference (`${{Api.RAILWAY_PUBLIC_DOMAIN}}`), that s
 
 | Path | Purpose |
 |---|---|
-| `/` | Homepage |
+| `/` | Homepage (site root — **not** `/web`) |
 | `/chart` | Charts (SPA) |
-| `/cms` | Hero CMS admin UI |
+| `/cms` | Hero CMS admin UI (banner upload) |
 | `/cms-api/public/hero` | Public hero campaigns |
 | `/cms-api/*` | CMS admin API (needs `x-cms-key`) |
 | `/cms-media/heroes/*` | Uploaded hero images |
-| `/healthz` | Liveness |
+| `/healthz` | Liveness (`cmsAuthConfigured`, `uploadsWritable`) |
 | `/hero-campaigns.json` | Static fallback if CMS offline |
+
+> There is no `/web` URL prefix. Host this service at the domain root (or a subdomain). Putting it behind `/web/...` breaks assets and CMS.
+
+## Banner upload checklist
+
+If `/cms` unlock works but upload fails:
+
+1. **`CMS_ACCESS_KEY`** set on Railway (runtime) — `/healthz` must show `"cmsAuthConfigured": true`
+2. **Volume** mounted at **`/app/data`**, replicas = **1**
+3. **No custom Start Command** in Railway (must use Dockerfile entrypoint so volume is chowned)
+4. `/healthz` shows `"uploadsWritable": true`
+5. Locally: use `npm run dev:all` (Vite alone cannot upload — CMS must be on `:8787`)
 
 ## Local vs production
 

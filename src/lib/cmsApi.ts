@@ -31,7 +31,15 @@ async function cmsFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (init.body && !(init.body instanceof FormData) && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
-  const res = await fetch(`/cms-api${path}`, { ...init, headers });
+  let res: Response;
+  try {
+    res = await fetch(`/cms-api${path}`, { ...init, headers });
+  } catch {
+    throw new CmsApiError(
+      "CMS unreachable. Locally run `npm run dev:all` (Vite + CMS). On Railway check /healthz and CMS_ACCESS_KEY.",
+      0,
+    );
+  }
   const data = (await res.json().catch(() => ({}))) as T & { message?: string };
   if (!res.ok) {
     throw new CmsApiError(data.message || `Request failed (${res.status})`, res.status);
