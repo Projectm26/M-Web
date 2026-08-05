@@ -9,4 +9,4 @@ chown -R web:web /app/data || {
   echo "[web] WARN: chown /app/data failed — uploads may be read-only" >&2
 }
 
-exec su-exec web "$@"
+exec gosu web "$@"

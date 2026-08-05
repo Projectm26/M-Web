@@ -42,7 +42,8 @@ If the value uses a Railway reference (`${{Api.RAILWAY_PUBLIC_DOMAIN}}`), that s
    - `VITE_API_BASE_URL` — **exact name**, set **before** first build (literal `https://…up.railway.app` or a resolved `${{…}}` reference)
    - `CMS_ACCESS_KEY` (long random)
 4. **Volume** → mount **`/app/data`**, replicas **1**.  
-   The image entrypoint chowns this path on boot (Railway volumes are root-owned; the app runs as `web`).
+   The image entrypoint chowns this path on boot (Railway volumes are root-owned; the app runs as `web`).  
+   Image base is **Debian slim** (not Alpine) so `better-sqlite3` does not depend on `unofficial-builds.nodejs.org` during Railway builds.
 5. Generate public domain → note `https://<web>.up.railway.app`.
 6. On **M-Backend** variables, add that origin to `ALLOWED_ORIGINS` (comma-separated), then redeploy API.
 7. Deploy Web. Healthcheck: **`GET /healthz`**.

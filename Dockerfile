@@ -10,14 +10,21 @@
 # as matching ARG names in this Dockerfile — see docs.railway.com/builds/dockerfiles
 # Mount a Volume at /app/data for CMS SQLite + hero uploads.
 # Add this site's public origin to the API service ALLOWED_ORIGINS.
+#
+# Use Debian slim (not Alpine): better-sqlite3 on Alpine pulls Node headers from
+# unofficial-builds.nodejs.org, which often ETIMEDOUT on Railway builders.
 
-# ----- Build SPA + compile native deps (better-sqlite3) ----------------------
-FROM node:22-alpine AS builder
+# ----- Build SPA + native deps (better-sqlite3) ------------------------------
+FROM node:22-bookworm-slim AS builder
 WORKDIR /app
 
-# Build tools for better-sqlite3 (node-gyp). Same alpine base as runner so
-# the compiled .node binary is compatible — do NOT reinstall in runner.
-RUN apk add --no-cache python3 make g++
+# Prefer prebuilds; fall back to compile with official nodejs.org headers.
+ENV npm_config_build_from_source=false \
+    npm_config_disturl=https://nodejs.org/dist
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 make g++ ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
@@ -46,7 +53,7 @@ RUN if [ -z "$VITE_API_BASE_URL" ]; then \
  && npm cache clean --force
 
 # ----- Runtime (static SPA + hero CMS) ---------------------------------------
-FROM node:22-alpine AS runner
+FROM node:22-bookworm-slim AS runner
 WORKDIR /app
 
 LABEL org.opencontainers.image.title="shubh555-web" \
@@ -58,10 +65,13 @@ ENV NODE_ENV=production \
     CMS_DATA_DIR=/app/data \
     NPM_CONFIG_LOGLEVEL=warn
 
-# No python/make/g++ here — native modules come from builder.
-# su-exec: drop root → web after chown'ing the Railway volume at /app/data
-RUN apk add --no-cache curl su-exec \
- && addgroup -S web && adduser -S web -G web \
+# Native modules come from builder (same glibc base).
+# gosu: drop root → web after chown'ing the Railway volume at /app/data
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl ca-certificates gosu \
+ && rm -rf /var/lib/apt/lists/* \
+ && groupadd --system web \
+ && useradd --system --gid web --home-dir /app --shell /usr/sbin/nologin web \
  && mkdir -p /app/data/uploads/heroes \
  && chown -R web:web /app
 
@@ -75,7 +85,7 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh \
  && chown -R web:web /app/dist /app/cms-server /app/public /app/data /app/node_modules /app/package.json
 
-# Start as root so entrypoint can chown the mounted volume, then su-exec to web.
+# Start as root so entrypoint can chown the mounted volume, then gosu to web.
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
