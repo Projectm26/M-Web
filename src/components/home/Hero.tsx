@@ -1,14 +1,17 @@
-import { Download, MessageCircle } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Download, MessageCircle } from "lucide-react";
 import { openApkDownload } from "../../hooks/useHomeData";
-import { useHeroCampaign } from "../../hooks/useHeroCampaign";
+import { useHeroCampaigns } from "../../hooks/useHeroCampaign";
 import { useFestivalSkin } from "../../hooks/useFestivalSkin";
 import { ResultBoard } from "./ResultBoard";
-import type { HeroPhoneTone } from "../../lib/heroCampaigns";
+import type { HeroCampaign, HeroPhoneTone } from "../../lib/heroCampaigns";
 import "./Hero.css";
 
 interface HeroProps {
   supportNumber?: string;
 }
+
+const AUTOPLAY_MS = 6500;
 
 function brandParts(brand: string) {
   const match = brand.match(/^(.*?)(555)$/);
@@ -43,17 +46,21 @@ function waLink(phone: string) {
   return digits ? `https://wa.me/${digits}` : "";
 }
 
-export function Hero({ supportNumber = "" }: HeroProps) {
-  const { campaign } = useHeroCampaign();
-  const festival = useFestivalSkin();
+function HeroSlide({
+  campaign,
+  supportNumber,
+  festivalLabel,
+  active,
+}: {
+  campaign: HeroCampaign;
+  supportNumber: string;
+  festivalLabel?: string;
+  active: boolean;
+}) {
   const { lead, accent } = brandParts(campaign.brand);
   const design = campaign.design;
   const showPhone = campaign.layout === "phone";
   const rows = campaign.phonePreview?.rows ?? [];
-  const festivalLabel = festival
-    ? festival.label || festivalFallbackLabel(festival.id)
-    : undefined;
-
   const overlay = Math.min(100, Math.max(0, design.overlayOpacity)) / 100;
   const shadeStyle = {
     background: `
@@ -85,10 +92,10 @@ export function Hero({ supportNumber = "" }: HeroProps) {
   const supportHref = design.showSupport ? waLink(supportNumber) : "";
 
   return (
-    <section
-      className={`hero hero--align-${design.textAlign}${showPhone ? " hero--with-phone" : ""}`}
-      aria-labelledby={design.showBrand ? "hero-brand" : undefined}
+    <article
+      className={`hero-slide hero--align-${design.textAlign}${showPhone ? " hero--with-phone" : ""}${active ? " is-active" : ""}`}
       data-campaign={campaign.id}
+      aria-hidden={!active}
     >
       <div className="hero-media" aria-hidden>
         <img
@@ -117,7 +124,7 @@ export function Hero({ supportNumber = "" }: HeroProps) {
           ) : null}
 
           {design.showBrand ? (
-            <h1 id="hero-brand" className="hero-brand">
+            <h1 className="hero-brand" id={active ? "hero-brand" : undefined}>
               {lead}
               {accent ? <span className="hero-brand-accent">{accent}</span> : null}
             </h1>
@@ -133,6 +140,7 @@ export function Hero({ supportNumber = "" }: HeroProps) {
                 type="button"
                 className={`hero-cta hero-cta--${design.ctaStyle}`}
                 onClick={onCta}
+                tabIndex={active ? 0 : -1}
               >
                 {design.ctaAction === "whatsapp" ? (
                   <MessageCircle size={18} strokeWidth={2.4} aria-hidden />
@@ -149,6 +157,7 @@ export function Hero({ supportNumber = "" }: HeroProps) {
                 href={supportHref}
                 target="_blank"
                 rel="noopener noreferrer"
+                tabIndex={active ? 0 : -1}
               >
                 <MessageCircle size={16} strokeWidth={2.4} aria-hidden />
                 WhatsApp
@@ -185,6 +194,101 @@ export function Hero({ supportNumber = "" }: HeroProps) {
           </div>
         ) : null}
       </div>
+    </article>
+  );
+}
+
+export function Hero({ supportNumber = "" }: HeroProps) {
+  const { campaigns } = useHeroCampaigns();
+  const festival = useFestivalSkin();
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const multi = campaigns.length > 1;
+  const safeIndex = Math.min(index, Math.max(0, campaigns.length - 1));
+  const festivalLabel = festival
+    ? festival.label || festivalFallbackLabel(festival.id)
+    : undefined;
+
+  useEffect(() => {
+    setIndex(0);
+  }, [campaigns]);
+
+  const go = useCallback(
+    (next: number) => {
+      if (!campaigns.length) return;
+      const len = campaigns.length;
+      setIndex(((next % len) + len) % len);
+    },
+    [campaigns.length],
+  );
+
+  useEffect(() => {
+    if (!multi || paused) return;
+    const id = window.setInterval(() => {
+      setIndex((i) => (i + 1) % campaigns.length);
+    }, AUTOPLAY_MS);
+    return () => window.clearInterval(id);
+  }, [multi, paused, campaigns.length]);
+
+  if (!campaigns.length) return null;
+
+  return (
+    <section
+      className={`hero${multi ? " hero--slider" : ""}`}
+      aria-roledescription={multi ? "carousel" : undefined}
+      aria-label="Hero banners"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setPaused(false);
+      }}
+    >
+      <div className="hero-slides">
+        {campaigns.map((campaign, i) => (
+          <HeroSlide
+            key={campaign.id}
+            campaign={campaign}
+            supportNumber={supportNumber}
+            festivalLabel={festivalLabel}
+            active={i === safeIndex}
+          />
+        ))}
+      </div>
+
+      {multi ? (
+        <div className="hero-slider-chrome">
+          <button
+            type="button"
+            className="hero-slider-nav hero-slider-nav--prev"
+            aria-label="Previous banner"
+            onClick={() => go(safeIndex - 1)}
+          >
+            <ChevronLeft size={20} strokeWidth={2.4} />
+          </button>
+          <div className="hero-slider-dots" role="tablist" aria-label="Banner slides">
+            {campaigns.map((c, i) => (
+              <button
+                key={c.id}
+                type="button"
+                role="tab"
+                aria-selected={i === safeIndex}
+                aria-label={`Show banner ${c.brand || c.id}`}
+                className={`hero-slider-dot${i === safeIndex ? " is-active" : ""}`}
+                onClick={() => setIndex(i)}
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            className="hero-slider-nav hero-slider-nav--next"
+            aria-label="Next banner"
+            onClick={() => go(safeIndex + 1)}
+          >
+            <ChevronRight size={20} strokeWidth={2.4} />
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }

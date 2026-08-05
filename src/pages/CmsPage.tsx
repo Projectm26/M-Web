@@ -157,12 +157,28 @@ function CampaignList() {
     }
   }
 
+  async function onToggleActive(campaign: CmsCampaign) {
+    try {
+      const next = mergeCampaign({ ...campaign, active: !campaign.active });
+      await updateCampaign(campaign.id, next);
+      setCampaigns((prev) => prev.map((c) => (c.id === campaign.id ? next : c)));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Could not update banner");
+    }
+  }
+
+  const activeCount = campaigns.filter((c) => c.active).length;
+
   return (
     <div className="cms-page">
       <header className="cms-top">
         <div>
           <p className="cms-eyebrow">Hero campaigns</p>
           <h1>Manage banners</h1>
+          <p className="cms-muted cms-small" style={{ marginTop: 6 }}>
+            Active banners rotate in a slider on the homepage. Disable a banner to hide it from the site.
+            {campaigns.length ? ` · ${activeCount} live / ${campaigns.length} total` : ""}
+          </p>
         </div>
         <div className="cms-top-actions">
           <Link to="/" className="cms-btn cms-btn-ghost">
@@ -190,7 +206,7 @@ function CampaignList() {
 
       <div className="cms-grid">
         {campaigns.map((c) => (
-          <article className="cms-card" key={c.id}>
+          <article className={`cms-card${c.active ? "" : " is-disabled"}`} key={c.id}>
             <div
               className="cms-card-thumb"
               style={{ backgroundImage: `url(${c.backgroundImage})` }}
@@ -198,8 +214,8 @@ function CampaignList() {
             <div className="cms-card-body">
               <div className="cms-card-meta">
                 <strong>{c.id}</strong>
-                <span className={c.active ? "cms-pill on" : "cms-pill"}>
-                  {c.active ? "Active" : "Off"}
+                <span className={c.active ? "cms-pill on" : "cms-pill off"}>
+                  {c.active ? "Enabled" : "Disabled"}
                 </span>
                 {defaultId === c.id ? <span className="cms-pill def">Default</span> : null}
               </div>
@@ -211,6 +227,13 @@ function CampaignList() {
                 <Link to={`/cms/${encodeURIComponent(c.id)}`} className="cms-btn cms-btn-primary">
                   Edit
                 </Link>
+                <button
+                  type="button"
+                  className={`cms-btn ${c.active ? "cms-btn-ghost" : "cms-btn-primary"}`}
+                  onClick={() => void onToggleActive(c)}
+                >
+                  {c.active ? "Disable" : "Enable"}
+                </button>
                 {defaultId !== c.id ? (
                   <button type="button" className="cms-btn cms-btn-ghost" onClick={() => onMakeDefault(c.id)}>
                     Set default

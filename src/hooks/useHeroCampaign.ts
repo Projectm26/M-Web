@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import {
   FALLBACK_HERO_CAMPAIGN,
   fetchHeroCampaignsConfig,
-  resolveActiveCampaign,
+  resolveActiveCampaigns,
   type HeroCampaign,
 } from "../lib/heroCampaigns";
 
-export function useHeroCampaign() {
-  const [campaign, setCampaign] = useState<HeroCampaign>(FALLBACK_HERO_CAMPAIGN);
+export function useHeroCampaigns() {
+  const [campaigns, setCampaigns] = useState<HeroCampaign[]>([FALLBACK_HERO_CAMPAIGN]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export function useHeroCampaign() {
     void (async () => {
       const config = await fetchHeroCampaignsConfig();
       if (cancelled) return;
-      setCampaign(resolveActiveCampaign(config));
+      setCampaigns(resolveActiveCampaigns(config));
       setLoading(false);
     })();
 
@@ -25,5 +25,11 @@ export function useHeroCampaign() {
     };
   }, []);
 
-  return { campaign, loading };
+  return { campaigns, loading };
+}
+
+/** @deprecated Prefer useHeroCampaigns for the slider. */
+export function useHeroCampaign() {
+  const { campaigns, loading } = useHeroCampaigns();
+  return { campaign: campaigns[0] || FALLBACK_HERO_CAMPAIGN, loading };
 }

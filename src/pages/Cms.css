@@ -234,6 +234,19 @@
   background: #e7f6ec;
 }
 
+.cms-pill.off {
+  color: #8a7f78;
+  background: #efe8e2;
+}
+
+.cms-card.is-disabled {
+  opacity: 0.72;
+}
+
+.cms-card.is-disabled .cms-card-thumb {
+  filter: grayscale(0.45);
+}
+
 .cms-pill.def {
   color: #b84e26;
   background: #faf0e8;

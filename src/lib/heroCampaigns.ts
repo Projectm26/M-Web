@@ -204,13 +204,14 @@ export function normalizeHeroCampaignsConfig(raw: unknown): HeroCampaignsConfig 
 }
 
 /**
- * Among active campaigns in date window, pick highest priority.
- * If none match, use defaultCampaignId (or first campaign).
+ * All active campaigns in date window, highest priority first.
+ * Disabled (`active: false`) banners are excluded from the site slider.
+ * If none are eligible, falls back to the default campaign only.
  */
-export function resolveActiveCampaign(
+export function resolveActiveCampaigns(
   config: HeroCampaignsConfig,
   today: Date = new Date(),
-): HeroCampaign {
+): HeroCampaign[] {
   const todayMs = Date.parse(
     `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}T12:00:00`,
   );
@@ -219,13 +220,21 @@ export function resolveActiveCampaign(
     .filter((c) => c.active && isInWindow(c, todayMs))
     .sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id));
 
-  if (eligible.length) return eligible[0];
+  if (eligible.length) return eligible;
 
   const fallback =
     config.campaigns.find((c) => c.id === config.defaultCampaignId) ||
     config.campaigns[0] ||
     FALLBACK_HERO_CAMPAIGN;
-  return fallback;
+  return [fallback];
+}
+
+/** @deprecated Prefer resolveActiveCampaigns for the multi-banner slider. */
+export function resolveActiveCampaign(
+  config: HeroCampaignsConfig,
+  today: Date = new Date(),
+): HeroCampaign {
+  return resolveActiveCampaigns(config, today)[0] || FALLBACK_HERO_CAMPAIGN;
 }
 
 export async function fetchHeroCampaignsConfig(): Promise<HeroCampaignsConfig> {
