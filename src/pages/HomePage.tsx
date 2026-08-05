@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { LiveTicker } from "../components/home/LiveTicker";
 import { Hero } from "../components/home/Hero";
-import { ProductRail } from "../components/home/ProductRail";
 import { RatesGrid } from "../components/home/RatesGrid";
 import { LiveMarkets } from "../components/home/LiveMarkets";
 import { NightMarketSection } from "../components/home/NightMarketSection";
@@ -24,7 +23,6 @@ export function HomePage() {
     <>
       <LiveTicker items={data.liveResults} />
       <Hero supportNumber={data.supportNumber} />
-      <ProductRail />
 
       {data.error ? (
         <div className="container home-error-wrap">

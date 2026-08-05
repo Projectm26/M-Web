@@ -101,8 +101,6 @@ function HeroSlide({
         />
         {/* Flat dark wash — CMS opacity maps 0–100% directly */}
         <div className="hero-media-overlay" style={{ opacity: overlayOpacity }} />
-        {/* Bottom blend into page (not tied to opacity control) */}
-        <div className="hero-media-fade" />
       </div>
 
       <div className="hero-frame container">

@@ -63,7 +63,7 @@
   --shadow-soft: 0 8px 28px rgb(31 26 24 / 6%);
   --header-h: 68px;
   --ticker-h: 40px;
-  --product-rail-h: 56px;
+  --product-rail-h: 0px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);

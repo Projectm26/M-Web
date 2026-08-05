@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import {
   clearCmsKey,
@@ -91,9 +91,12 @@ function UnlockScreen({ onUnlocked }: { onUnlocked: () => void }) {
   return (
     <div className="cms-unlock">
       <form className="cms-unlock-card" onSubmit={submit}>
-        <p className="cms-eyebrow">Shubh555 web</p>
-        <h1>Hero CMS</h1>
-        <p className="cms-muted">Enter the access key from your environment (`CMS_ACCESS_KEY`).</p>
+        <p className="cms-eyebrow">Shubh555</p>
+        <h1>Banner CMS</h1>
+        <p className="cms-muted">
+          Sign in with your <code className="cms-code">CMS_ACCESS_KEY</code> to manage homepage
+          banners.
+        </p>
         <label>
           Access key
           <input
@@ -101,12 +104,13 @@ function UnlockScreen({ onUnlocked }: { onUnlocked: () => void }) {
             autoComplete="current-password"
             value={key}
             onChange={(e) => setKey(e.target.value)}
+            placeholder="Paste key…"
             required
           />
         </label>
         {error ? <p className="cms-error">{error}</p> : null}
         <button type="submit" className="cms-btn cms-btn-primary" disabled={busy}>
-          {busy ? "Checking…" : "Unlock"}
+          {busy ? "Checking…" : "Unlock CMS"}
         </button>
       </form>
     </div>
@@ -117,6 +121,7 @@ function CampaignList() {
   const [campaigns, setCampaigns] = useState<CmsCampaign[]>([]);
   const [defaultId, setDefaultId] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -138,10 +143,17 @@ function CampaignList() {
     void refresh();
   }, []);
 
+  useEffect(() => {
+    if (!notice) return;
+    const t = window.setTimeout(() => setNotice(""), 2400);
+    return () => window.clearTimeout(t);
+  }, [notice]);
+
   async function onDelete(id: string) {
-    if (!confirm(`Delete campaign “${id}”?`)) return;
+    if (!confirm(`Delete banner “${id}”? This cannot be undone.`)) return;
     try {
       await removeCampaign(id);
+      setNotice(`Deleted “${id}”`);
       await refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Delete failed");
@@ -152,6 +164,7 @@ function CampaignList() {
     try {
       await setDefaultCampaign(id);
       setDefaultId(id);
+      setNotice(`“${id}” is now the fallback default`);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed");
     }
@@ -162,6 +175,7 @@ function CampaignList() {
       const next = mergeCampaign({ ...campaign, active: !campaign.active });
       await updateCampaign(campaign.id, next);
       setCampaigns((prev) => prev.map((c) => (c.id === campaign.id ? next : c)));
+      setNotice(next.active ? `Enabled “${campaign.id}”` : `Disabled “${campaign.id}”`);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Could not update banner");
     }
@@ -173,15 +187,14 @@ function CampaignList() {
     <div className="cms-page">
       <header className="cms-top">
         <div>
-          <p className="cms-eyebrow">Hero campaigns</p>
-          <h1>Manage banners</h1>
-          <p className="cms-muted cms-small" style={{ marginTop: 6 }}>
-            Active banners rotate in a slider on the homepage. Disable a banner to hide it from the site.
-            {campaigns.length ? ` · ${activeCount} live / ${campaigns.length} total` : ""}
+          <p className="cms-eyebrow">Hero banners</p>
+          <h1>Campaigns</h1>
+          <p className="cms-lead">
+            Enabled banners rotate on the homepage. Disable any banner to hide it instantly.
           </p>
         </div>
         <div className="cms-top-actions">
-          <Link to="/" className="cms-btn cms-btn-ghost">
+          <Link to="/" className="cms-btn cms-btn-ghost" target="_blank" rel="noreferrer">
             View site
           </Link>
           <button
@@ -196,13 +209,41 @@ function CampaignList() {
             Lock
           </button>
           <Link to="/cms/new" className="cms-btn cms-btn-primary">
-            Add campaign
+            New banner
           </Link>
         </div>
       </header>
 
+      {!loading && campaigns.length ? (
+        <div className="cms-stats">
+          <div className="cms-stat">
+            <strong>{activeCount}</strong>
+            <span>Live</span>
+          </div>
+          <div className="cms-stat">
+            <strong>{campaigns.length - activeCount}</strong>
+            <span>Disabled</span>
+          </div>
+          <div className="cms-stat">
+            <strong>{campaigns.length}</strong>
+            <span>Total</span>
+          </div>
+        </div>
+      ) : null}
+
+      {notice ? <p className="cms-notice" role="status">{notice}</p> : null}
       {error ? <p className="cms-error">{error}</p> : null}
-      {loading ? <p className="cms-muted">Loading…</p> : null}
+      {loading ? <p className="cms-muted cms-loading">Loading campaigns…</p> : null}
+
+      {!loading && !campaigns.length && !error ? (
+        <div className="cms-empty">
+          <h2>No banners yet</h2>
+          <p>Create your first campaign — upload a 1920×720 image and go live.</p>
+          <Link to="/cms/new" className="cms-btn cms-btn-primary">
+            Create banner
+          </Link>
+        </div>
+      ) : null}
 
       <div className="cms-grid">
         {campaigns.map((c) => (
@@ -210,18 +251,24 @@ function CampaignList() {
             <div
               className="cms-card-thumb"
               style={{ backgroundImage: `url(${c.backgroundImage})` }}
-            />
-            <div className="cms-card-body">
-              <div className="cms-card-meta">
-                <strong>{c.id}</strong>
+            >
+              <div className="cms-card-badges">
                 <span className={c.active ? "cms-pill on" : "cms-pill off"}>
-                  {c.active ? "Enabled" : "Disabled"}
+                  {c.active ? "Live" : "Off"}
                 </span>
                 {defaultId === c.id ? <span className="cms-pill def">Default</span> : null}
               </div>
-              <p className="cms-card-copy">{c.kicker || c.tagline || "—"}</p>
+            </div>
+            <div className="cms-card-body">
+              <div className="cms-card-meta">
+                <strong className="cms-card-id">{c.id}</strong>
+              </div>
+              <p className="cms-card-copy">{c.tagline || c.kicker || c.brand || "No copy yet"}</p>
               <p className="cms-muted cms-small">
-                Priority {c.priority} · {c.layout} · {c.startsAt || "…"} → {c.endsAt || "open"}
+                Priority {c.priority}
+                {c.startsAt || c.endsAt
+                  ? ` · ${c.startsAt || "…"} → ${c.endsAt || "open"}`
+                  : " · Always on"}
               </p>
               <div className="cms-card-actions">
                 <Link to={`/cms/${encodeURIComponent(c.id)}`} className="cms-btn cms-btn-primary">
@@ -229,17 +276,25 @@ function CampaignList() {
                 </Link>
                 <button
                   type="button"
-                  className={`cms-btn ${c.active ? "cms-btn-ghost" : "cms-btn-primary"}`}
+                  className="cms-btn cms-btn-ghost"
                   onClick={() => void onToggleActive(c)}
                 >
                   {c.active ? "Disable" : "Enable"}
                 </button>
                 {defaultId !== c.id ? (
-                  <button type="button" className="cms-btn cms-btn-ghost" onClick={() => onMakeDefault(c.id)}>
-                    Set default
+                  <button
+                    type="button"
+                    className="cms-btn cms-btn-ghost"
+                    onClick={() => void onMakeDefault(c.id)}
+                  >
+                    Default
                   </button>
                 ) : null}
-                <button type="button" className="cms-btn cms-btn-danger" onClick={() => onDelete(c.id)}>
+                <button
+                  type="button"
+                  className="cms-btn cms-btn-danger"
+                  onClick={() => void onDelete(c.id)}
+                >
                   Delete
                 </button>
               </div>
@@ -279,10 +334,13 @@ function ToggleChip({
 function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
   const { id: routeId } = useParams();
   const navigate = useNavigate();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<CmsCampaign>(EMPTY);
   const [watermarkText, setWatermarkText] = useState("5,5,5");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(mode === "edit");
 
   useEffect(() => {
@@ -361,7 +419,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
 
   async function onUpload(file: File | null) {
     if (!file) return;
-    setBusy(true);
+    setUploading(true);
     setError("");
     try {
       const { url } = await uploadHeroImage(file);
@@ -369,12 +427,12 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
-      setBusy(false);
+      setUploading(false);
     }
   }
 
-  async function onSave(e: React.FormEvent) {
-    e.preventDefault();
+  async function onSave(e?: React.FormEvent) {
+    e?.preventDefault();
     setBusy(true);
     setError("");
     const watermark = watermarkText
@@ -407,29 +465,42 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
   if (loading) {
     return (
       <div className="cms-page">
-        <p className="cms-muted">Loading…</p>
+        <p className="cms-muted cms-loading">Loading campaign…</p>
       </div>
     );
   }
 
   return (
     <div className="cms-page cms-page--editor">
-      <header className="cms-top">
+      <header className="cms-top cms-top--editor">
         <div>
-          <p className="cms-eyebrow">{mode === "new" ? "New" : "Edit"}</p>
-          <h1>{mode === "new" ? "Add campaign" : form.id}</h1>
+          <p className="cms-eyebrow">{mode === "new" ? "New banner" : "Edit banner"}</p>
+          <h1>{mode === "new" ? "Create campaign" : form.id || "Campaign"}</h1>
         </div>
-        <Link to="/cms" className="cms-btn cms-btn-ghost">
-          Back
-        </Link>
+        <div className="cms-top-actions">
+          <Link to="/cms" className="cms-btn cms-btn-ghost">
+            Cancel
+          </Link>
+          <button
+            type="button"
+            className="cms-btn cms-btn-primary"
+            disabled={busy || uploading}
+            onClick={() => void onSave()}
+          >
+            {busy ? "Saving…" : "Save"}
+          </button>
+        </div>
       </header>
 
       <div className="cms-editor">
-        <form className="cms-form" onSubmit={onSave}>
+        <form className="cms-form" onSubmit={(e) => void onSave(e)}>
           <section className="cms-section">
             <header className="cms-section-head">
-              <h2>Campaign meta</h2>
-              <p>Identity, schedule, and layout.</p>
+              <span className="cms-step">1</span>
+              <div>
+                <h2>Setup</h2>
+                <p>Id, schedule, and whether this banner is live.</p>
+              </div>
             </header>
 
             <label>
@@ -444,7 +515,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
             </label>
 
             <div className="cms-toggle-row">
-              <ToggleChip label="Active" checked={form.active} onChange={(v) => patch("active", v)} />
+              <ToggleChip label="Enabled on site" checked={form.active} onChange={(v) => patch("active", v)} />
             </div>
 
             <div className="cms-row2">
@@ -474,6 +545,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
                   value={form.priority}
                   onChange={(e) => patch("priority", Number(e.target.value))}
                 />
+                <span className="cms-field-hint">Higher shows first in the slider</span>
               </label>
               <label>
                 Layout
@@ -490,33 +562,71 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
 
           <section className="cms-section">
             <header className="cms-section-head">
-              <h2>Media</h2>
-              <p>Background image, crop position, and overlay wash.</p>
+              <span className="cms-step">2</span>
+              <div>
+                <h2>Image</h2>
+                <p>Upload, crop position, and dark overlay.</p>
+              </div>
             </header>
 
             <div className="cms-size-hint">
-              <strong>Banner size</strong>
+              <strong>Recommended</strong>
               <span>
-                Upload <em>1920 × 720 px</em> (8:3 JPG/WebP, max 8MB). Site shows a fixed height:
-                280px mobile · 520px tablet/desktop · 560px wide screens (image is cover-cropped).
+                <em>1920 × 720 px</em> · JPG/WebP · max 8MB · fixed site heights 280 / 520 / 560px
               </span>
             </div>
 
-            <label>
-              Background image
+            <div
+              className={`cms-dropzone${dragOver ? " is-drag" : ""}${form.backgroundImage ? " has-image" : ""}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(false);
+                void onUpload(e.dataTransfer.files?.[0] || null);
+              }}
+              onClick={() => fileRef.current?.click()}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  fileRef.current?.click();
+                }
+              }}
+            >
               <input
+                ref={fileRef}
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif"
+                hidden
                 onChange={(e) => void onUpload(e.target.files?.[0] || null)}
               />
-            </label>
-            {form.backgroundImage ? (
-              <p className="cms-muted cms-small cms-mono">{form.backgroundImage}</p>
-            ) : null}
+              {form.backgroundImage ? (
+                <>
+                  <div
+                    className="cms-dropzone-thumb"
+                    style={{ backgroundImage: `url(${form.backgroundImage})` }}
+                  />
+                  <div className="cms-dropzone-meta">
+                    <strong>{uploading ? "Uploading…" : "Image ready"}</strong>
+                    <span>Click or drop to replace</span>
+                  </div>
+                </>
+              ) : (
+                <div className="cms-dropzone-meta">
+                  <strong>{uploading ? "Uploading…" : "Drop image here"}</strong>
+                  <span>or click to browse</span>
+                </div>
+              )}
+            </div>
 
             <div className="cms-slider-block">
               <div className="cms-slider-head">
-                <span>Position X</span>
+                <span>Crop X</span>
                 <strong>{pos.x}%</strong>
               </div>
               <input
@@ -530,7 +640,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
 
             <div className="cms-slider-block">
               <div className="cms-slider-head">
-                <span>Position Y</span>
+                <span>Crop Y</span>
                 <strong>{pos.y}%</strong>
               </div>
               <input
@@ -544,7 +654,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
 
             <div className="cms-slider-block">
               <div className="cms-slider-head">
-                <span>Overlay opacity</span>
+                <span>Overlay</span>
                 <strong>{design.overlayOpacity}%</strong>
               </div>
               <input
@@ -554,9 +664,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
                 value={design.overlayOpacity}
                 onChange={(e) => patchDesign("overlayOpacity", Number(e.target.value))}
               />
-              <p className="cms-muted cms-small" style={{ margin: "4px 0 0" }}>
-                Dark wash over the image only. 0% = full photo, 100% = solid dark. Text stays above the overlay.
-              </p>
+              <p className="cms-field-hint">0% = full photo · 100% = solid dark</p>
             </div>
 
             <fieldset className="cms-seg">
@@ -578,32 +686,11 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
 
           <section className="cms-section">
             <header className="cms-section-head">
-              <h2>Content</h2>
-              <p>Copy shown in the hero.</p>
-            </header>
-
-            <label>
-              Kicker
-              <input value={form.kicker} onChange={(e) => patch("kicker", e.target.value)} />
-            </label>
-            <label>
-              Brand
-              <input value={form.brand} onChange={(e) => patch("brand", e.target.value)} />
-            </label>
-            <label>
-              Tagline
-              <textarea
-                rows={3}
-                value={form.tagline}
-                onChange={(e) => patch("tagline", e.target.value)}
-              />
-            </label>
-          </section>
-
-          <section className="cms-section">
-            <header className="cms-section-head">
-              <h2>Visibility</h2>
-              <p>Toggle which hero elements appear.</p>
+              <span className="cms-step">3</span>
+              <div>
+                <h2>Copy & visibility</h2>
+                <p>What appears on the banner.</p>
+              </div>
             </header>
 
             <div className="cms-toggle-grid">
@@ -628,17 +715,43 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
                 onChange={(v) => patchDesign("showCta", v)}
               />
               <ToggleChip
-                label="Support / WhatsApp"
+                label="WhatsApp"
                 checked={design.showSupport}
                 onChange={(v) => patchDesign("showSupport", v)}
               />
             </div>
+
+            {design.showKicker ? (
+              <label>
+                Kicker
+                <input value={form.kicker} onChange={(e) => patch("kicker", e.target.value)} />
+              </label>
+            ) : null}
+            {design.showBrand ? (
+              <label>
+                Brand
+                <input value={form.brand} onChange={(e) => patch("brand", e.target.value)} />
+              </label>
+            ) : null}
+            {design.showTagline ? (
+              <label>
+                Tagline
+                <textarea
+                  rows={3}
+                  value={form.tagline}
+                  onChange={(e) => patch("tagline", e.target.value)}
+                />
+              </label>
+            ) : null}
           </section>
 
           <section className="cms-section">
             <header className="cms-section-head">
-              <h2>CTA</h2>
-              <p>Button label, action, and style.</p>
+              <span className="cms-step">4</span>
+              <div>
+                <h2>Call to action</h2>
+                <p>Button label, destination, and style.</p>
+              </div>
             </header>
 
             <label>
@@ -658,8 +771,8 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
                     )
                   }
                 >
-                  <option value="download">Download</option>
-                  <option value="link">Link</option>
+                  <option value="download">Download app</option>
+                  <option value="link">External link</option>
                   <option value="whatsapp">WhatsApp</option>
                   <option value="none">None</option>
                 </select>
@@ -698,7 +811,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
           <details className="cms-section cms-section--advanced">
             <summary>
               <span>Advanced</span>
-              <span className="cms-muted cms-small">Optional watermark digits</span>
+              <span className="cms-muted cms-small">Watermark digits</span>
             </summary>
             <label>
               Watermark digits (comma-separated)
@@ -707,27 +820,42 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
           </details>
 
           {error ? <p className="cms-error">{error}</p> : null}
-          <button type="submit" className="cms-btn cms-btn-primary cms-btn-save" disabled={busy}>
-            {busy ? "Saving…" : "Save campaign"}
-          </button>
+
+          <div className="cms-form-footer">
+            <Link to="/cms" className="cms-btn cms-btn-ghost">
+              Cancel
+            </Link>
+            <button type="submit" className="cms-btn cms-btn-primary" disabled={busy || uploading}>
+              {busy ? "Saving…" : mode === "new" ? "Create banner" : "Save changes"}
+            </button>
+          </div>
         </form>
 
-        <aside className="cms-preview" style={previewStyle}>
-          <div className="cms-preview-overlay" style={overlayStyle} />
-          <div className="cms-preview-wash" style={washStyle}>
-            {design.showKicker ? (
-              <p className="cms-preview-kicker">{form.kicker || "Kicker"}</p>
-            ) : null}
-            {design.showBrand ? <h2>{form.brand || "Shubh555"}</h2> : null}
-            {design.showTagline ? <p>{form.tagline || "Tagline preview"}</p> : null}
-            {design.showCta && design.ctaAction !== "none" ? (
-              <span className={`cms-preview-cta cms-preview-cta--${design.ctaStyle}`}>
-                {form.ctaLabel || "CTA"}
-              </span>
-            ) : null}
-            {design.showSupport ? (
-              <span className="cms-preview-support">WhatsApp support</span>
-            ) : null}
+        <aside className="cms-preview-panel">
+          <div className="cms-preview-label">
+            <span>Live preview</span>
+            <span className="cms-muted cms-small">1920×720 · 8:3</span>
+          </div>
+          <div className="cms-preview" style={previewStyle}>
+            <div className="cms-preview-overlay" style={overlayStyle} />
+            <div className="cms-preview-wash" style={washStyle}>
+              {design.showKicker ? (
+                <p className="cms-preview-kicker">{form.kicker || "Kicker"}</p>
+              ) : null}
+              {design.showBrand ? <h2>{form.brand || "Shubh555"}</h2> : null}
+              {design.showTagline ? <p>{form.tagline || "Tagline preview"}</p> : null}
+              {design.showCta && design.ctaAction !== "none" ? (
+                <span className={`cms-preview-cta cms-preview-cta--${design.ctaStyle}`}>
+                  {form.ctaLabel || "CTA"}
+                </span>
+              ) : null}
+              {design.showSupport ? (
+                <span className="cms-preview-support">WhatsApp support</span>
+              ) : null}
+              {!design.showBrand && !design.showTagline && !design.showCta && !design.showKicker ? (
+                <p className="cms-preview-empty">Turn on brand, tagline, or CTA to preview copy</p>
+              ) : null}
+            </div>
           </div>
         </aside>
       </div>
@@ -754,7 +882,7 @@ export function CmsPage() {
   if (!ready) {
     return (
       <div className="cms-shell">
-        <p className="cms-muted" style={{ padding: 40 }}>
+        <p className="cms-muted cms-loading" style={{ padding: 40 }}>
           Loading CMS…
         </p>
       </div>
