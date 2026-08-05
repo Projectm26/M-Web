@@ -484,7 +484,33 @@
 
 /* Preview */
 
+.cms-size-hint {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f3ebe6;
+  border: 1px solid #e4d6cc;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: #5f5652;
+}
+
+.cms-size-hint strong {
+  color: #1f1a18;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cms-size-hint em {
+  font-style: normal;
+  font-weight: 700;
+  color: #b84e26;
+}
+
 .cms-preview {
+  position: relative;
   min-height: 320px;
   border-radius: 20px;
   overflow: hidden;
@@ -493,7 +519,18 @@
   box-shadow: 0 10px 28px rgb(31 26 24 / 12%);
 }
 
+.cms-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: #0e0907;
+  opacity: 0.72;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .cms-preview-wash {
+  position: relative;
+  z-index: 1;
   height: 100%;
   min-height: 320px;
   padding: 28px;

@@ -319,10 +319,8 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
     [form.backgroundImage, form.objectPosition],
   );
 
-  const washStyle = useMemo(() => {
-    const o = Math.min(100, Math.max(0, design.overlayOpacity)) / 100;
-    return {
-      background: `linear-gradient(180deg, rgb(14 9 7 / ${o * 0.25}) 0%, rgb(14 9 7 / ${o}) 100%)`,
+  const washStyle = useMemo(
+    () => ({
       textAlign: design.textAlign as React.CSSProperties["textAlign"],
       alignItems:
         design.textAlign === "center"
@@ -330,8 +328,16 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
           : design.textAlign === "right"
             ? ("flex-end" as const)
             : ("flex-start" as const),
-    };
-  }, [design.overlayOpacity, design.textAlign]);
+    }),
+    [design.textAlign],
+  );
+
+  const overlayStyle = useMemo(
+    () => ({
+      opacity: Math.min(100, Math.max(0, design.overlayOpacity)) / 100,
+    }),
+    [design.overlayOpacity],
+  );
 
   function patch<K extends keyof CmsCampaign>(key: K, value: CmsCampaign[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -488,6 +494,14 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
               <p>Background image, crop position, and overlay wash.</p>
             </header>
 
+            <div className="cms-size-hint">
+              <strong>Banner size</strong>
+              <span>
+                Upload <em>1920 × 720 px</em> (8:3 JPG/WebP, max 8MB). Site shows a fixed height:
+                280px mobile · 520px tablet/desktop · 560px wide screens (image is cover-cropped).
+              </span>
+            </div>
+
             <label>
               Background image
               <input
@@ -540,6 +554,9 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
                 value={design.overlayOpacity}
                 onChange={(e) => patchDesign("overlayOpacity", Number(e.target.value))}
               />
+              <p className="cms-muted cms-small" style={{ margin: "4px 0 0" }}>
+                Dark wash over the image only. 0% = full photo, 100% = solid dark. Text stays above the overlay.
+              </p>
             </div>
 
             <fieldset className="cms-seg">
@@ -696,6 +713,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
         </form>
 
         <aside className="cms-preview" style={previewStyle}>
+          <div className="cms-preview-overlay" style={overlayStyle} />
           <div className="cms-preview-wash" style={washStyle}>
             {design.showKicker ? (
               <p className="cms-preview-kicker">{form.kicker || "Kicker"}</p>

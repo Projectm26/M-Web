@@ -61,19 +61,7 @@ function HeroSlide({
   const design = campaign.design;
   const showPhone = campaign.layout === "phone";
   const rows = campaign.phonePreview?.rows ?? [];
-  const overlay = Math.min(100, Math.max(0, design.overlayOpacity)) / 100;
-  const shadeStyle = {
-    background: `
-      linear-gradient(
-        100deg,
-        rgb(18 12 9 / ${0.55 + overlay * 0.4}) 0%,
-        rgb(22 15 11 / ${0.35 + overlay * 0.4}) 42%,
-        rgb(22 15 11 / ${0.12 + overlay * 0.28}) 72%,
-        rgb(22 15 11 / ${0.08 + overlay * 0.18}) 100%
-      ),
-      linear-gradient(to top, var(--color-bg) 0%, transparent 26%)
-    `,
-  };
+  const overlayOpacity = Math.min(100, Math.max(0, design.overlayOpacity ?? 72)) / 100;
 
   function onCta() {
     if (design.ctaAction === "none" || !design.showCta) return;
@@ -103,7 +91,7 @@ function HeroSlide({
           src={campaign.backgroundImage}
           alt=""
           width={1920}
-          height={1080}
+          height={720}
           decoding="async"
           style={
             campaign.objectPosition
@@ -111,7 +99,10 @@ function HeroSlide({
               : undefined
           }
         />
-        <div className="hero-media-shade" style={shadeStyle} />
+        {/* Flat dark wash — CMS opacity maps 0–100% directly */}
+        <div className="hero-media-overlay" style={{ opacity: overlayOpacity }} />
+        {/* Bottom blend into page (not tied to opacity control) */}
+        <div className="hero-media-fade" />
       </div>
 
       <div className="hero-frame container">
