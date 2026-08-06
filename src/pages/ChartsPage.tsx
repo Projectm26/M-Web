@@ -51,6 +51,7 @@ export function ChartsPage() {
   const id = params.get("id");
   const nameParam = params.get("name");
   const timeParam = params.get("time");
+  const marketParam = params.get("market") === "night" ? "night" : "main";
 
   if (kind && id) {
     return (
@@ -59,6 +60,7 @@ export function ChartsPage() {
         id={id}
         nameHint={nameParam}
         timeHint={timeParam}
+        market={marketParam}
       />
     );
   }
@@ -67,17 +69,17 @@ export function ChartsPage() {
 }
 
 function ChartsHub() {
-  const { mainGames, loading } = useChartHub();
+  const { mainGames, nightGames, loading } = useChartHub();
 
   return (
     <section className="charts-page">
       <div className="container charts-page-inner">
         <header className="charts-hero">
-          <p className="charts-kicker">Live boards</p>
+          <p className="charts-kicker">Satta charts</p>
           <h1>Charts</h1>
           <p className="charts-lead">
-            Main market week charts plus Bombay Starline &amp; Bombay Jackpot 12-hour day/night boards —
-            same layout as the Shubh555 app.
+            Jodi and Pana week charts for Main and Night, plus Bombay Starline and Bombay Jackpot
+            day/night hour boards — same history as the Shubh555 app.
           </p>
         </header>
 
@@ -98,7 +100,7 @@ function ChartsHub() {
                 const id = game.game_id ?? game.id;
                 if (id == null) return null;
                 return (
-                  <div className="charts-hub-card" key={`${id}-${i}`}>
+                  <div className="charts-hub-card" key={`main-${id}-${i}`}>
                     <div>
                       <h3>{game.game_name}</h3>
                       <p>
@@ -116,6 +118,43 @@ function ChartsHub() {
                       </Link>
                       <Link
                         to={`/chart?type=pana&id=${id}&name=${encodeURIComponent(game.game_name)}`}
+                        className="charts-hub-link"
+                      >
+                        Pana <ChevronRight size={14} />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </HubSection>
+
+            <HubSection
+              title="Night markets"
+              tone="night"
+              empty="No night markets available."
+            >
+              {nightGames.map((game, i) => {
+                const id = game.game_id ?? game.id;
+                if (id == null) return null;
+                return (
+                  <div className="charts-hub-card charts-hub-card--night" key={`night-${id}-${i}`}>
+                    <div>
+                      <h3>{game.game_name}</h3>
+                      <p>
+                        {game.resultData
+                          ? normalizeGameResultDisplay(game.resultData, "—")
+                          : "—"}
+                      </p>
+                    </div>
+                    <div className="charts-hub-links">
+                      <Link
+                        to={`/chart?type=jodi&id=${id}&name=${encodeURIComponent(game.game_name)}&market=night`}
+                        className="charts-hub-link"
+                      >
+                        Jodi <ChevronRight size={14} />
+                      </Link>
+                      <Link
+                        to={`/chart?type=pana&id=${id}&name=${encodeURIComponent(game.game_name)}&market=night`}
                         className="charts-hub-link"
                       >
                         Pana <ChevronRight size={14} />
@@ -246,14 +285,16 @@ function ChartDetail({
   id,
   nameHint,
   timeHint,
+  market = "main",
 }: {
   kind: ChartKind;
   id: string;
   nameHint: string | null;
   timeHint: string | null;
+  market?: "main" | "night";
 }) {
   const tableRef = useRef<WeekChartTableHandle>(null);
-  const { weeks, gameName, loading, error } = useChartView(kind, id);
+  const { weeks, gameName, loading, error } = useChartView(kind, id, market);
   const meta = chartHistoryMeta(weeks);
   const displayName =
     gameName ||
@@ -273,9 +314,11 @@ function ChartDetail({
             All charts
           </Link>
           <div className="charts-detail-heading">
-            <span className={`charts-kind-pill charts-kind-pill--${kind}`}>
+            <span
+              className={`charts-kind-pill charts-kind-pill--${kind}${market === "night" ? " charts-kind-pill--night-market" : ""}`}
+            >
               <ChartLine size={13} />
-              {kind}
+              {market === "night" ? `night · ${kind}` : kind}
             </span>
             <h1>{chartTitle(kind, displayName)}</h1>
             <p>

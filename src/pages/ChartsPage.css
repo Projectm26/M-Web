@@ -47,6 +47,23 @@
   color: var(--product-starline);
 }
 
+.charts-hub-section--night h2 {
+  color: var(--product-night);
+}
+
+.charts-hub-card--night h3 {
+  color: var(--product-night);
+}
+
+.charts-hub-card--night .charts-hub-link {
+  color: var(--product-night);
+}
+
+.charts-kind-pill--night-market {
+  color: var(--product-night);
+  background: var(--product-night-soft);
+}
+
 .charts-hub-section--jackpot h2 {
   color: #b87a16;
 }

@@ -5,7 +5,12 @@ export interface GameRate {
   min: number | string;
   max: number | string;
   status?: number;
+  id?: number | string;
 }
+
+export type RatesMarketId = "main" | "night" | "starline" | "jackpot";
+
+export type MarketRatesMap = Record<RatesMarketId, GameRate[]>;
 
 export interface MarketGame {
   game_id?: number | string;

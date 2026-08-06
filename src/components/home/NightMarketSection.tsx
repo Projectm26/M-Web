@@ -18,9 +18,9 @@ export function NightMarketSection({ games, loading }: NightMarketSectionProps) 
       <div className="container">
         <SectionHead
           tone="night"
-          eyebrow="After dusk"
+          eyebrow="Night satta"
           title="Night Market"
-          copy="Evening sessions with live open and close boards."
+          copy="Evening matka sessions with open–close results and Jodi / Pana charts."
         />
 
         {loading && empty ? (
@@ -30,7 +30,7 @@ export function NightMarketSection({ games, loading }: NightMarketSectionProps) 
             ))}
           </div>
         ) : empty ? (
-          <div className="state-block">Night markets will appear when sessions are scheduled.</div>
+          <div className="state-block">Night matka sessions will show when scheduled.</div>
         ) : (
           <div className="markets-grid">
             {games.map((game, index) => {
@@ -47,6 +47,20 @@ export function NightMarketSection({ games, loading }: NightMarketSectionProps) 
                     { label: "Open", value: formatClock(game.open_time) },
                     { label: "Close", value: formatClock(game.close_time) },
                   ]}
+                  charts={
+                    id != null
+                      ? [
+                          {
+                            label: "Jodi",
+                            to: `/chart?type=jodi&id=${id}&name=${encodeURIComponent(game.game_name)}&market=night`,
+                          },
+                          {
+                            label: "Pana",
+                            to: `/chart?type=pana&id=${id}&name=${encodeURIComponent(game.game_name)}&market=night`,
+                          },
+                        ]
+                      : [{ label: "Chart", to: "/chart" }]
+                  }
                 />
               );
             })}

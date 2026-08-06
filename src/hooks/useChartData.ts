@@ -25,7 +25,11 @@ export interface ChartViewState {
   error: string | null;
 }
 
-function ankUrl(kind: ChartKind): string {
+function ankUrl(kind: ChartKind, market: "main" | "night" = "main"): string {
+  if (market === "night") {
+    if (kind === "jodi") return website.nightJodiAnk;
+    if (kind === "pana") return website.nightPanaAnk;
+  }
   if (kind === "jodi") return website.jodiAnk;
   if (kind === "pana") return website.panaAnk;
   if (kind === "starline") return website.starlineAnk;
@@ -35,6 +39,7 @@ function ankUrl(kind: ChartKind): string {
 export function useChartView(
   kind: ChartKind | null,
   gameId: string | null,
+  market: "main" | "night" = "main",
 ): ChartViewState {
   const [weeks, setWeeks] = useState<ChartWeekRow[]>([]);
   const [gameName, setGameName] = useState("");
@@ -56,7 +61,7 @@ export function useChartView(
       setLoading(true);
       setError(null);
       try {
-        const res = await postJson<AnkResponse>(ankUrl(kind!), {
+        const res = await postJson<AnkResponse>(ankUrl(kind!, market), {
           game_id: Number.isFinite(Number(gameId)) ? Number(gameId) : gameId,
         });
         if (cancelled) return;
@@ -81,13 +86,14 @@ export function useChartView(
     return () => {
       cancelled = true;
     };
-  }, [kind, gameId]);
+  }, [kind, gameId, market]);
 
   return { weeks, gameName, loading, error };
 }
 
 export interface ChartHubLists {
   mainGames: MarketGame[];
+  nightGames: MarketGame[];
   loading: boolean;
 }
 
@@ -101,6 +107,7 @@ function isSummaryName(name: string) {
 
 export function useChartHub(): ChartHubLists {
   const [mainGames, setMainGames] = useState<MarketGame[]>([]);
+  const [nightGames, setNightGames] = useState<MarketGame[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -109,14 +116,16 @@ export function useChartHub(): ChartHubLists {
     async function load() {
       setLoading(true);
       try {
-        const gamesRes = await fetchJson<{ updatedGames: MarketGame[] }>(
-          website.games,
-        ).catch(() => null);
+        const [gamesRes, nightRes] = await Promise.all([
+          fetchJson<{ updatedGames: MarketGame[] }>(website.games).catch(() => null),
+          fetchJson<{ night_games: MarketGame[] }>(website.nightMarkets).catch(() => null),
+        ]);
         if (cancelled) return;
         const games = gamesRes?.updatedGames ?? [];
         setMainGames(
           games.slice(2).filter((g) => !isSummaryName(g.game_name || "")),
         );
+        setNightGames(nightRes?.night_games ?? []);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -128,7 +137,7 @@ export function useChartHub(): ChartHubLists {
     };
   }, []);
 
-  return { mainGames, loading };
+  return { mainGames, nightGames, loading };
 }
 
 export function useEmptyPlaceholder(kind: ChartKind | null) {

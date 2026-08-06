@@ -2,12 +2,87 @@
   position: relative;
 }
 
+.rates-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 4px;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 14px;
+  background: #efe8e2;
+  border: 1px solid #e0d4cc;
+}
+
+.rates-switch {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #6a5f59;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 140ms var(--ease-out),
+    color 140ms var(--ease-out),
+    box-shadow 140ms var(--ease-out);
+}
+
+.rates-switch.is-active {
+  color: #1f1a18;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(31 26 24 / 10%);
+}
+
+.rates-switch--main.is-active {
+  color: var(--color-primary-dark, #b84e26);
+}
+
+.rates-switch--night.is-active {
+  color: var(--product-night);
+}
+
+.rates-switch--starline.is-active {
+  color: var(--product-starline);
+}
+
+.rates-switch--jackpot.is-active {
+  color: #b87a16;
+}
+
 .rates-sheet {
   border-radius: 20px;
   background: var(--color-ink);
   border: 1px solid var(--color-ink-border);
   box-shadow: 0 6px 18px rgb(31 26 24 / 4.5%);
   overflow: hidden;
+}
+
+.rates-sheet--night .rate-row-arrow,
+.rates-sheet--night .rate-row-multi {
+  color: rgb(100 149 237 / 75%);
+}
+
+.rates-sheet--night .rate-row-win {
+  color: #8eb6ff;
+}
+
+.rates-sheet--starline .rate-row-arrow,
+.rates-sheet--starline .rate-row-multi {
+  color: rgb(0 151 167 / 75%);
+}
+
+.rates-sheet--starline .rate-row-win {
+  color: #5fd4e0;
+}
+
+.rates-sheet--jackpot .rate-row-arrow,
+.rates-sheet--jackpot .rate-row-multi {
+  color: rgb(232 160 74 / 78%);
 }
 
 .rates-sheet-head {
@@ -107,6 +182,16 @@
 }
 
 @media (max-width: 719px) {
+  .rates-switcher {
+    width: 100%;
+  }
+
+  .rates-switch {
+    flex: 1 1 auto;
+    text-align: center;
+    min-width: calc(50% - 6px);
+  }
+
   .rate-row {
     padding: 13px 14px;
   }

@@ -250,10 +250,10 @@ function seedFromJson(db: InstanceType<typeof Database>) {
         startsAt: "2026-07-01",
         endsAt: null,
         priority: 10,
-        kicker: "Declared results · Daily markets",
+        kicker: "Satta matka · Live results",
         brand: "Shubh555",
         tagline:
-          "Today's open–close boards on the web. Play Main, Night, Bombay Starline & Lottery in the official app.",
+          "Today’s open–close satta results on the web. Bid Main, Night, Starline & Jackpot in the official app.",
         ctaLabel: "Download Official App",
         showSupportLinks: true,
         backgroundImage: "/media/heroes/sunset.jpg",

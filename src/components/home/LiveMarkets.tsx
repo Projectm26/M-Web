@@ -50,9 +50,9 @@ export function LiveMarkets({
       <div className="container">
         <SectionHead
           tone="main"
-          eyebrow="Open · Close · Charts"
+          eyebrow="Open · Close · Jodi · Pana"
           title="Live Markets"
-          copy="Main boards, current Bombay Starline & Bombay Jackpot — declared results through the day."
+          copy="Today’s satta boards — Main Market open/close, plus live Bombay Starline and Bombay Jackpot."
         />
 
         <div id="jackpot" className="section-anchor" aria-hidden />
@@ -65,7 +65,7 @@ export function LiveMarkets({
             ))}
           </div>
         ) : empty ? (
-          <div className="state-block">No markets available right now.</div>
+          <div className="state-block">No markets declared right now.</div>
         ) : (
           <div className="markets-grid">
             {jackpotSummary || currentJackpot ? (

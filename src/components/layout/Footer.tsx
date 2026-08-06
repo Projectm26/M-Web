@@ -37,7 +37,7 @@ export function Footer({ supportNumber = "" }: FooterProps) {
               />
             </Link>
             <p className="footer-tagline">
-              Live results, charts, and the official app — Sunset Pulse markets in one place.
+              Live satta matka results, jodi–pana charts, and the official Shubh555 app.
             </p>
             <button type="button" className="footer-download" onClick={openApkDownload}>
               <Download size={16} strokeWidth={2.4} />
@@ -127,7 +127,7 @@ export function Footer({ supportNumber = "" }: FooterProps) {
           </div>
           <p className="footer-credit-note">
             <span className="footer-credit-chip">Official</span>
-            Web results are for reference — place bids only in the Android app.
+            Web results are for reference — place satta bids only in the Android app.
           </p>
         </div>
       </div>

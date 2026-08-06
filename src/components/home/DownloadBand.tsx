@@ -22,16 +22,16 @@ export function DownloadBand() {
 
       <div className="container download-band-inner">
         <div className="download-band-copy">
-          <p className="download-band-kicker">Official Android app</p>
+          <p className="download-band-kicker">Official satta app</p>
           <h2 id="download-band-title" className="download-band-brand">
             Shubh<span>555</span>
           </h2>
           <p className="download-band-lead">
-            Bid on Main, Night, Bombay Starline, Bombay Jackpot &amp; Lottery with wallet, charts, and support in
-            one place.
+            Bid Digit, Jodi, Pana &amp; Sangam on Main, Night, Bombay Starline, Bombay Jackpot, and
+            Lottery — wallet, charts, and results in one app.
           </p>
           <p className="download-band-meta">
-            <span>Bidding</span>
+            <span>Open–Close</span>
             <span aria-hidden>·</span>
             <span>Wallet</span>
             <span aria-hidden>·</span>
@@ -46,7 +46,7 @@ export function DownloadBand() {
             <Download size={18} strokeWidth={2.4} />
             Download Official App
           </button>
-          <p className="download-band-note">Free APK · Same boards as this site</p>
+          <p className="download-band-note">Free APK · Same results as this site</p>
         </div>
       </div>
     </section>

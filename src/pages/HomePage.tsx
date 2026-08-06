@@ -49,7 +49,10 @@ export function HomePage() {
         results={data.lotteryResults}
         loading={data.loading && !data.lotteryGames.length}
       />
-      <RatesGrid rates={data.rates} loading={data.loading && !data.rates.length} />
+      <RatesGrid
+        marketRates={data.marketRates}
+        loading={data.loading && !data.marketRates.main.length}
+      />
       <DownloadBand />
       <Faq />
     </>

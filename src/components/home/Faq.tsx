@@ -6,43 +6,27 @@ import "./Faq.css";
 const FAQ_ITEMS = [
   {
     q: "What is Shubh555?",
-    a: "Shubh555 is the official app for matka markets — Main, Night Market, Bombay Starline, Bombay Jackpot, and Lottery — with live results, charts, wallet deposits, and withdrawals.",
+    a: "Shubh555 is a satta matka platform for Main Market, Night Market, Bombay Starline, Bombay Jackpot, and Lottery. Check live open–close results and charts here; place bids only in the official Android app.",
   },
   {
-    q: "Which products can I play?",
-    a: "Main markets through the day, Night Market in the evening, plus Bombay Starline, Bombay Jackpot, and Lottery. This website shows results for reference; place bids only in the official Android app.",
-  },
-  {
-    q: "What is Night Market?",
-    a: "Night Market is the evening matka product with its own open/close times, result boards, and charts. It runs separately from daytime Main markets.",
-  },
-  {
-    q: "How do Night Market results work?",
-    a: "Each Night game lists Open and Close times. The open digit posts after the open window; close completes the full result line. Pending slots show as dashes until declared.",
+    q: "How do open and close results work?",
+    a: "Each market has an open and close time. After open, the open panna and digit are declared; after close, the full line (panna–jodi–panna) is complete. Dashes mean the result is not declared yet.",
   },
   {
     q: "How do I place a bid?",
-    a: "Download the official Shubh555 app, add balance to your wallet, open the market you want (Main, Night, Bombay Starline, Bombay Jackpot, or Lottery), and submit before the game closes.",
+    a: "Download the Shubh555 app, add wallet balance, pick Digit, Jodi, Single/Double/Triple Pana, Sangam, or Red, and submit before that market’s close time. This website does not accept bids.",
   },
   {
-    q: "How does Lottery work?",
-    a: "Open Lottery in the app, pick a draw while tickets are on sale, and buy before draw time. Winning numbers appear on the site and in the app after the draw is declared.",
+    q: "What rates do you pay?",
+    a: "Public Main and Night rates are listed in the Rates section — Digit, Jodi, Single Pana, DP, TP, Half/Full Sangam, and Red. Starline and Jackpot rates are on their own tabs. Final settlement is always in the app wallet.",
   },
   {
-    q: "Where can I see game rates?",
-    a: "Payout rates for common game types are listed in the Rates section on this site. Exact bid options and wallet settlement happen inside the app.",
-  },
-  {
-    q: "How do I check charts and history?",
-    a: "Open Charts from the menu or a market card. You can browse Jodi, Pana, and related history for Main and Night markets to review past declared results.",
-  },
-  {
-    q: "Can I bid from this website?",
-    a: "No. The website is for live boards, charts, rates, and downloads. All bidding, wallet top-ups, and withdrawals are only in the official Android app.",
+    q: "Where can I see old charts?",
+    a: "Open Charts from the menu or tap Jodi / Pana on a market card. You get week history for Main and Night, plus day/night boards for Bombay Starline and Bombay Jackpot.",
   },
   {
     q: "How do I contact support?",
-    a: "Use WhatsApp from the site footer with the official support number, or open Support inside the Shubh555 app for account and wallet help.",
+    a: "Message the official WhatsApp number in the footer, or open Support inside the Shubh555 app for wallet and account help.",
   },
 ] as const;
 
@@ -56,9 +40,9 @@ export function Faq() {
         <div className="faq-intro">
           <SectionHead
             id={`${baseId}-title`}
-            eyebrow="Help centre"
-            title="Frequently asked questions"
-            copy="Markets, Night sessions, lottery, rates, charts, and the official app — quick answers before you download."
+            eyebrow="Help"
+            title="Matka FAQs"
+            copy="Open–close, rates, charts, and bidding — short answers before you download the app."
           />
         </div>
 

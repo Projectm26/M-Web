@@ -172,9 +172,9 @@ export function LotterySection({ games, results, loading }: LotterySectionProps)
       <div className="container">
         <SectionHead
           tone="lottery"
-          eyebrow="Draws · Tickets · Pots"
+          eyebrow="Draws · Tickets"
           title="Lottery"
-          copy="Ticket draws with jackpots and winning numbers — play in the official app."
+          copy="Separate lottery draws with ticket pots — play from the Shubh555 app alongside matka markets."
         />
 
         {loading && empty ? (

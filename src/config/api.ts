@@ -35,6 +35,8 @@ export const website = {
   festivalSkin: `${API_BASE}/api/website/get-festival-skin`,
   jodiAnk: `${API_BASE}/api/website/get-main-jodi-ankchart`,
   panaAnk: `${API_BASE}/api/website/get-main-pana-ankchart`,
+  nightJodiAnk: `${API_BASE}/api/website/get-night-jodi-ankchart`,
+  nightPanaAnk: `${API_BASE}/api/website/get-night-pana-ankchart`,
   nightMarkets: `${API_BASE}/api/website/get-night-markets`,
 } as const;
 

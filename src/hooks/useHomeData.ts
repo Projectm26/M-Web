@@ -7,6 +7,8 @@ import type {
   LotteryGame,
   LotteryResultRow,
   MarketGame,
+  MarketRatesMap,
+  RatesMarketId,
   SupportInfo,
   TimedGame,
 } from "../lib/types";
@@ -17,7 +19,26 @@ export function openApkDownload() {
   window.open(apkDownloadUrl, "_blank", "noopener,noreferrer");
 }
 
-const CACHE_KEY = "shubh555-home-cache-v2";
+const CACHE_KEY = "shubh555-home-cache-v3";
+
+const EMPTY_MARKET_RATES: MarketRatesMap = {
+  main: [],
+  night: [],
+  starline: [],
+  jackpot: [],
+};
+
+function normalizeMarketRates(
+  markets: Partial<MarketRatesMap> | undefined,
+  fallbackMain: GameRate[] = [],
+): MarketRatesMap {
+  return {
+    main: markets?.main?.length ? markets.main : fallbackMain,
+    night: markets?.night ?? [],
+    starline: markets?.starline ?? [],
+    jackpot: markets?.jackpot ?? [],
+  };
+}
 
 function sanitizeResultData(value?: string | null) {
   if (value == null) return value ?? undefined;
@@ -39,7 +60,9 @@ function sanitizeMarketGames<T extends { resultData?: string }>(games: T[]): T[]
 }
 
 interface HomeCache {
-  rates: GameRate[];
+  marketRates: MarketRatesMap;
+  /** @deprecated kept for older cache readers */
+  rates?: GameRate[];
   games: MarketGame[];
   supportNumber: string;
   starlineGames: TimedGame[];
@@ -51,6 +74,7 @@ interface HomeCache {
 }
 
 interface HomeData {
+  marketRates: MarketRatesMap;
   rates: GameRate[];
   games: MarketGame[];
   supportNumber: string;
@@ -96,6 +120,7 @@ function readCache(): HomeCache | null {
     if (!parsed?.games?.length) return null;
     return {
       ...parsed,
+      marketRates: normalizeMarketRates(parsed.marketRates, parsed.rates ?? []),
       games: sanitizeMarketGames(parsed.games),
       nightGames: sanitizeMarketGames(parsed.nightGames ?? []),
     };
@@ -118,7 +143,7 @@ function writeCache(payload: Omit<HomeCache, "savedAt">) {
 export function useHomeData(): HomeData {
   const cached = useMemo(() => readCache(), []);
   const snapshot = useRef({
-    rates: cached?.rates ?? ([] as GameRate[]),
+    marketRates: cached?.marketRates ?? { ...EMPTY_MARKET_RATES },
     games: cached?.games ?? ([] as MarketGame[]),
     supportNumber: cached?.supportNumber ?? "",
     starlineGames: cached?.starlineGames ?? ([] as TimedGame[]),
@@ -128,7 +153,7 @@ export function useHomeData(): HomeData {
     lotteryResults: cached?.lotteryResults ?? ([] as LotteryResultRow[]),
   });
 
-  const [rates, setRates] = useState<GameRate[]>(snapshot.current.rates);
+  const [marketRates, setMarketRates] = useState<MarketRatesMap>(snapshot.current.marketRates);
   const [games, setGames] = useState<MarketGame[]>(snapshot.current.games);
   const [supportNumber, setSupportNumber] = useState(snapshot.current.supportNumber);
   const [starlineGames, setStarlineGames] = useState<TimedGame[]>(
@@ -159,12 +184,10 @@ export function useHomeData(): HomeData {
       setError(null);
 
       try {
-        // Markets paint from get-games alone (includes Jackpot + Starline results).
-        // Removed ank-chart fan-out — that was the main homepage lag.
         const gamesPromise = settledJson<{ updatedGames: MarketGame[] }>(website.games);
 
         const secondaryPromise = Promise.all([
-          settledJson<{ data: GameRate[] }>(website.rates),
+          settledJson<{ data: GameRate[]; markets?: Partial<MarketRatesMap> }>(website.rates),
           settledJson<{ admin_info: SupportInfo | null }>(website.support),
           settledJson<{ starline_games: TimedGame[] }>(website.starlineList),
           settledJson<{ jackpot_games: TimedGame[] }>(website.jackpotList),
@@ -177,9 +200,9 @@ export function useHomeData(): HomeData {
         if (cancelled) return;
 
         if (gamesRes?.updatedGames?.length) {
-          const games = sanitizeMarketGames(gamesRes.updatedGames);
-          snapshot.current.games = games;
-          setGames(games);
+          const nextGames = sanitizeMarketGames(gamesRes.updatedGames);
+          snapshot.current.games = nextGames;
+          setGames(nextGames);
           setMarketsLoading(false);
         }
 
@@ -206,7 +229,9 @@ export function useHomeData(): HomeData {
 
         const next = { ...snapshot.current };
         if (gamesRes?.updatedGames) next.games = sanitizeMarketGames(gamesRes.updatedGames);
-        if (ratesRes?.data) next.rates = ratesRes.data;
+        if (ratesRes) {
+          next.marketRates = normalizeMarketRates(ratesRes.markets, ratesRes.data ?? []);
+        }
         if (supportRes?.admin_info?.support_number) {
           next.supportNumber = supportRes.admin_info.support_number;
         }
@@ -218,7 +243,7 @@ export function useHomeData(): HomeData {
 
         snapshot.current = next;
         setGames(next.games);
-        setRates(next.rates);
+        setMarketRates(next.marketRates);
         setSupportNumber(next.supportNumber);
         setStarlineGames(next.starlineGames);
         setJackpotGames(next.jackpotGames);
@@ -280,7 +305,10 @@ export function useHomeData(): HomeData {
     return (declared.length ? declared : sorted).slice(0, 8);
   }, [games]);
 
+  const rates = marketRates.main;
+
   return {
+    marketRates,
     rates,
     games,
     supportNumber,
@@ -299,3 +327,5 @@ export function useHomeData(): HomeData {
     refresh,
   };
 }
+
+export type { RatesMarketId };
