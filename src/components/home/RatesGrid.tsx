@@ -19,9 +19,9 @@ const RATE_TABS: { id: RatesMarketId; label: string }[] = [
 const MAIN_NIGHT_RATES: { match: RegExp; label: string; max: number }[] = [
   { match: /^(single\s*)?digit$/i, label: "Digit", max: 10 },
   { match: /^jodi(\s*digit)?$/i, label: "Jodi", max: 100 },
-  { match: /^single\s*pann?a$/i, label: "Single pana", max: 160 },
-  { match: /^(dp|double\s*pann?a)$/i, label: "Dp", max: 320 },
-  { match: /^(tp|trip+le?\s*pann?a)$/i, label: "Tp", max: 1000 },
+  { match: /^single\s*pann?a$/i, label: "Single panna", max: 160 },
+  { match: /^(dp|double\s*pann?a)$/i, label: "Double panna", max: 320 },
+  { match: /^(tp|trip+le?\s*pann?a)$/i, label: "Triple panna", max: 1000 },
   { match: /^half\s*sangam$/i, label: "Half sangam", max: 1000 },
   { match: /^full\s*sangam$/i, label: "Full sangam", max: 10000 },
   { match: /^red(\s*brackets?)?$/i, label: "Red", max: 100 },
@@ -44,6 +44,16 @@ function multiplier(min: number | string, max: number | string) {
 
 function normalizeType(type: string) {
   return type.replace(/_/g, " ").trim();
+}
+
+/** Expand short rate codes for public display. */
+function displayRateType(type: string) {
+  const t = normalizeType(type);
+  if (/^(dp|double\s*pann?a)$/i.test(t)) return "Double panna";
+  if (/^(tp|trip+le?\s*pann?a)$/i.test(t)) return "Triple panna";
+  if (/^single\s*pann?a$/i.test(t)) return "Single panna";
+  if (/^sp$/i.test(t)) return "Single panna";
+  return t.replace(/\bDp\b/g, "Double panna").replace(/\bTp\b/g, "Triple panna");
 }
 
 /** Drop underscore duplicates when a spaced twin exists (e.g. Jodi_Digit). */
@@ -85,7 +95,7 @@ function ratesForMarket(market: RatesMarketId, rates: GameRate[]): GameRate[] {
   }
   return cleanRates(rates).map((r) => ({
     ...r,
-    type: normalizeType(r.type),
+    type: displayRateType(r.type),
   }));
 }
 

@@ -18,7 +18,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "What rates do you pay?",
-    a: "Public Main and Night rates are listed in the Rates section — Digit, Jodi, Single Pana, DP, TP, Half/Full Sangam, and Red. Starline and Jackpot rates are on their own tabs. Final settlement is always in the app wallet.",
+    a: "Public Main and Night rates are listed in the Rates section — Digit, Jodi, Single Panna, Double Panna, Triple Panna, Half/Full Sangam, and Red. Starline and Jackpot rates are on their own tabs. Final settlement is always in the app wallet.",
   },
   {
     q: "Where can I see old charts?",
