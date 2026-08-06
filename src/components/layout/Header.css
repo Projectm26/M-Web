@@ -272,15 +272,23 @@
   }
 
   .header-download {
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
     padding: 0;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .header-chrome-btn {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .site-header-inner {
+    gap: 10px;
+  }
+
+  .brand-logo-img {
+    height: 28px;
   }
 }

@@ -40,11 +40,13 @@
 
 @media (max-width: 899px) {
   .download-fab {
-    width: 52px;
-    height: 52px;
-    min-height: 52px;
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
     padding: 0;
     border-radius: 50%;
+    right: max(12px, var(--safe-right));
+    bottom: max(12px, calc(10px + var(--safe-bottom)));
   }
 
   .download-fab span {

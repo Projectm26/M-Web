@@ -199,23 +199,24 @@
 
 @media (max-width: 799px) {
   .download-band {
-    padding: 40px 0;
+    padding: 28px 0;
   }
 
   .download-band-mark {
-    font-size: 4.5rem;
-    opacity: 0.7;
-    right: -2%;
+    font-size: 3.5rem;
+    opacity: 0.55;
+    right: -4%;
   }
 
   .download-band-brand {
-    font-size: clamp(2rem, 9vw, 2.6rem);
+    font-size: clamp(1.75rem, 8vw, 2.35rem);
   }
 
   .download-band-lead {
-    margin-top: 12px;
-    font-size: 0.95rem;
-    max-width: 32ch;
+    margin-top: 10px;
+    font-size: 0.88rem;
+    max-width: 34ch;
+    line-height: 1.45;
   }
 
   .download-band-meta {
@@ -225,11 +226,17 @@
   .download-band-cta {
     width: 100%;
     justify-items: stretch;
+    margin-top: 4px;
   }
 
   .download-band-btn {
     width: 100%;
-    min-height: 50px;
+    min-height: 48px;
+  }
+
+  .download-band-note {
+    text-align: center;
+    font-size: 0.75rem;
   }
 }
 

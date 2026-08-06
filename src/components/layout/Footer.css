@@ -305,6 +305,36 @@
   border: 1px solid rgb(255 255 255 / 16%);
 }
 
+@media (max-width: 719px) {
+  .site-footer-inner {
+    padding-block: 28px 24px;
+    gap: 24px;
+  }
+
+  .footer-tagline {
+    font-size: 0.88rem;
+    max-width: 34ch;
+  }
+
+  .footer-download {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footer-support-btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .footer-trust-link img {
+    height: 30px;
+  }
+
+  .footer-credit-note {
+    font-size: 0.72rem;
+  }
+}
+
 @media (min-width: 720px) {
   .footer-cols {
     grid-template-columns: repeat(3, minmax(0, 1fr));

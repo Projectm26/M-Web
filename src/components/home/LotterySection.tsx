@@ -41,6 +41,23 @@ function formatMoney(value: number | string | null | undefined) {
   return `₹${n.toLocaleString("en-IN")}`;
 }
 
+/** Same as app jackpotHeadline(): manual override first, else pot estimate. */
+function jackpotHeadline(game: LotteryGame): string | null {
+  const override = game.jackpot_override;
+  if (override != null && String(override).trim() !== "") {
+    const n = Number(override);
+    if (Number.isFinite(n) && n > 0) return formatMoney(n);
+    if (!Number.isFinite(n) && String(override).trim() !== "0") {
+      return formatMoney(override);
+    }
+  }
+  const pot = game.pot_estimate;
+  if (pot == null || pot === "") return null;
+  const n = Number(pot);
+  if (Number.isFinite(n) && n > 0) return formatMoney(n);
+  return null;
+}
+
 /* —— Winning tickets ——
    Gold → purple → neutral tiers, so long lists still read as tiers. */
 function tierClass(i: number) {
@@ -188,7 +205,7 @@ export function LotterySection({ games, results, loading }: LotterySectionProps)
         ) : (
           <div className="lottery-grid">
             {featured.map((game) => {
-              const pot = formatMoney(game.pot_estimate);
+              const pot = jackpotHeadline(game);
               const tickets = splitWinningTickets(game.last_result?.winning_numbers);
               const drawn = tickets.length > 0;
               const price = formatMoney(game.ticket_price);

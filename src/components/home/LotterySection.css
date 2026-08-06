@@ -535,3 +535,54 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+@media (max-width: 719px) {
+  .lottery-ticket {
+    border-radius: 16px;
+  }
+
+  .lottery-ticket-body {
+    padding: 14px 14px 10px;
+  }
+
+  .lottery-ticket-titles h3 {
+    font-size: 1.05rem;
+  }
+
+  .lottery-tagline {
+    font-size: 0.82rem;
+  }
+
+  .lottery-jackpot strong {
+    font-size: 1.4rem;
+  }
+
+  .lottery-stub {
+    padding: 4px 10px 12px 14px;
+  }
+
+  .lottery-play-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .lottery-recent {
+    margin-top: var(--space-5);
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .lottery-sheet-card {
+    width: min(100% - 16px, 560px);
+    max-height: min(82dvh, 640px);
+    border-radius: 18px;
+  }
+
+  .lottery-sheet-head {
+    padding: 14px 14px 12px;
+  }
+
+  .lottery-sheet-list {
+    padding: 12px 14px 14px;
+  }
+}

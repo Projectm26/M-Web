@@ -184,16 +184,24 @@
 @media (max-width: 719px) {
   .rates-switcher {
     width: 100%;
+    margin-bottom: 12px;
   }
 
   .rates-switch {
     flex: 1 1 auto;
     text-align: center;
     min-width: calc(50% - 6px);
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .rates-sheet {
+    border-radius: 16px;
   }
 
   .rate-row {
-    padding: 13px 14px;
+    padding: 12px 14px;
   }
 
   .rate-row-type {
@@ -202,11 +210,15 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
   .rate-row-win {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
+  }
+
+  .rate-row-bet {
+    font-size: 0.85rem;
   }
 }
 

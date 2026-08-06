@@ -89,15 +89,20 @@
 
 @media (max-width: 639px) {
   .section-head {
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
+  }
+
+  .section-head-ornament {
+    margin-bottom: 8px;
   }
 
   .section-head-title {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
   }
 
   .section-head-copy {
-    font-size: 0.92rem;
-    max-width: 34ch;
+    font-size: 0.86rem;
+    max-width: 36ch;
+    line-height: 1.45;
   }
 }

@@ -572,7 +572,7 @@ function CampaignEditor({ mode }: { mode: "new" | "edit" }) {
             <div className="cms-size-hint">
               <strong>Recommended</strong>
               <span>
-                <em>1920 × 720 px</em> · JPG/WebP · max 8MB · fixed site heights 280 / 520 / 560px
+                <em>1920 × 720 px</em> · JPG/WebP · max 8MB · site keeps 8:3 (scales down on mobile, no crop)
               </span>
             </div>
 

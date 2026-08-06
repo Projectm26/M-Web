@@ -63,6 +63,8 @@ export interface LotteryGame {
   is_featured?: boolean | number;
   playable?: boolean;
   pot_estimate?: number | string | null;
+  /** Manual jackpot amount from admin — preferred over pot_estimate when set. */
+  jackpot_override?: number | string | null;
   open_time_clock?: string | null;
   close_time_clock?: string | null;
   draw_time_clock?: string | null;

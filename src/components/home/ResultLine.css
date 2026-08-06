@@ -16,6 +16,20 @@
   font-size: clamp(1.25rem, 2.4vw, 1.4rem);
 }
 
+@media (max-width: 559px) {
+  .result-line--lg {
+    font-size: 1.12rem;
+  }
+
+  .result-line--md {
+    font-size: 1.05rem;
+  }
+
+  .result-line--status {
+    font-size: 0.8rem;
+  }
+}
+
 .result-line--status {
   font-size: 0.88rem;
   font-weight: 600;

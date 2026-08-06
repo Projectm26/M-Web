@@ -203,43 +203,73 @@
 
 @media (max-width: 559px) {
   .market-card {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .market-card-body {
+    flex: 1 1 calc(100% - 56px);
+    min-width: 0;
   }
 
   .market-title {
+    font-size: 0.95rem;
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
   }
 
+  .market-schedule {
+    font-size: 0.72rem;
+  }
+
   .market-card-action {
-    justify-content: space-between;
-    width: 100%;
+    display: contents;
   }
 
   .market-charts {
+    order: 3;
+    flex: 1 1 100%;
     flex-direction: row;
-    flex: 1;
+    gap: 6px;
   }
 
   .chart-btn {
     flex: 1;
-    min-height: 44px;
-    height: 44px;
+    min-width: 0;
+    min-height: 40px;
+    height: 40px;
+    padding: 0 8px;
+    font-size: 0.7rem;
+    gap: 3px;
+  }
+
+  .chart-btn svg {
+    width: 12px;
+    height: 12px;
   }
 
   .play-btn,
   .lock-btn {
-    width: 48px;
-    height: 48px;
+    order: 2;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
   }
 }
 
 @media (max-width: 379px) {
   .market-card {
-    padding: 14px;
+    padding: 12px;
+  }
+
+  .chart-btn {
+    min-height: 38px;
+    height: 38px;
   }
 }

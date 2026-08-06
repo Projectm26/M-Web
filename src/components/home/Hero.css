@@ -1,8 +1,8 @@
-/* Hero — fixed-height full-bleed banner
-   Upload target: 1920 × 720 (8:3). Display: cover-cropped to --hero-banner-h. */
+/* Hero — full-bleed 8:3 banner (upload 1920×720).
+   Same aspect on all viewports so the image is not cropped; height scales with width. */
 
 .hero {
-  --hero-banner-h: 280px;
+  --hero-ratio: 8 / 3;
   --hero-pad-y: 1.75rem;
   --hero-pad-y-end: 2.25rem;
   position: relative;
@@ -10,7 +10,9 @@
   overflow: hidden;
   color: #fff8f2;
   background: #16110e;
-  height: var(--hero-banner-h);
+  width: 100%;
+  aspect-ratio: var(--hero-ratio);
+  height: auto;
 }
 
 /* —— Media plane (edge to edge) —— */
@@ -391,7 +393,6 @@
 
 @media (min-width: 760px) {
   .hero {
-    --hero-banner-h: 520px;
     --hero-pad-y: 2.5rem;
     --hero-pad-y-end: 3rem;
   }
@@ -431,36 +432,104 @@
   }
 }
 
-@media (min-width: 1200px) {
-  .hero {
-    --hero-banner-h: 560px;
-  }
-}
-
 @media (max-width: 759px) {
   .hero {
-    --hero-pad-y: 1.35rem;
-    --hero-pad-y-end: 2.5rem;
+    --hero-pad-y: 0.55rem;
+    --hero-pad-y-end: 1.65rem;
+  }
+
+  .hero-frame.container {
+    width: min(100% - 24px, var(--max-w));
   }
 
   .hero-copy {
     max-width: none;
-    gap: 0.85rem;
+    gap: 0.35rem;
+  }
+
+  .hero-kicker {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
   }
 
   .hero-brand {
-    font-size: clamp(2.35rem, 11vw, 3rem);
+    font-size: clamp(1.35rem, 6.5vw, 1.85rem);
   }
 
   .hero-line {
-    max-width: 26ch;
-    font-size: 0.95rem;
+    max-width: 34ch;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-actions {
+    gap: 0.45rem;
+    margin-top: 0.15rem;
   }
 
   .hero-cta {
-    width: 100%;
+    width: auto;
     max-width: none;
-    min-height: 3rem;
+    min-height: 2.35rem;
+    padding: 0 0.95rem;
+    font-size: 0.78rem;
+    border-radius: 0.7rem;
+    gap: 0.4rem;
+  }
+
+  .hero-cta svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .hero-support {
+    min-height: 2.35rem;
+    padding: 0 0.75rem;
+    font-size: 0.72rem;
+  }
+
+  .hero-slider-chrome {
+    bottom: 0.4rem;
+    gap: 0.45rem;
+  }
+
+  .hero-slider-dots {
+    padding: 0.22rem 0.4rem;
+    gap: 0.35rem;
+  }
+
+  .hero-slider-dot {
+    width: 0.38rem;
+    height: 0.38rem;
+  }
+
+  .hero-slider-dot.is-active {
+    width: 1rem;
+  }
+}
+
+@media (max-width: 379px) {
+  .hero {
+    --hero-pad-y: 0.4rem;
+    --hero-pad-y-end: 1.4rem;
+  }
+
+  .hero-brand {
+    font-size: 1.2rem;
+  }
+
+  .hero-line {
+    font-size: 0.68rem;
+    -webkit-line-clamp: 1;
+  }
+
+  .hero-cta {
+    min-height: 2.15rem;
+    font-size: 0.72rem;
   }
 }
 
